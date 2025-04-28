@@ -728,7 +728,7 @@ console.log(this.a); // 1
 
 ### 3-4
 
-자바스크립트의 모든 변수는 특정 객체의 프로퍼티로서 동작함. 
+자바스크립트의 모든 변수는 특정 객체의 프로퍼티로서 동작함 
 
 ```js
 var a = 1;
@@ -740,6 +740,28 @@ window.a = 3;
 b = 4;
 console.log(a, window.a, this.a); // 3 3 3
 console.log(b, window.b, this.b); // 4 4 4
+```
+
+### 3-5
+
+전역 객체를 선언할 경우, 해당 프로퍼티의 configurable 속성(변경 및 삭제 가능성)이 false가 됨
+
+```js
+var a = 1;
+delete window.a; // false
+console.log(a, window.a, this.a); // 1 1 1
+
+var b = 2;
+delete b; // false
+console.log(b, window.b, this.b); // 2 2 2
+
+window.c = 3;
+delete window.c; // true
+console.log(c, window.c, this.c); // Uncaught ReferenceError: c is not defined
+
+window.d = 4;
+delete d; // true
+console.log(d, window.d, this.d); // Uncaught ReferenceError: d is not defined
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
