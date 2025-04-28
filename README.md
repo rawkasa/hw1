@@ -876,6 +876,24 @@ var obj = {
 obj.outer();
 ```
 
+### 3-12
+
+콜백 함수 내부에서의 This는 전역 객체임. 배열에서의 This는 전역 객체이나, 두 번째 인자를 제공하면 해당 인자가 콜백 함수 내의 This가 됨. 이벤트 핸들러 콜백함수의 This는 이벤트가 발생된 DOM(Document Object Model) 요소를 가리킴.
+
+```js
+setTimeout(function() { console.log(this); }, 300);         // (1)
+
+[1, 2, 3, 4, 5].forEach(function(x) {                       // (2)
+    console.log(this, x);
+});
+
+document.body.innerHTML += '<button id="a">클릭</button>';
+document.body.querySelector('#a')
+    .addEventListener('click', function(e) {                // (3)
+        console.log(this, e);
+    });
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
