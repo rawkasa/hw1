@@ -1001,6 +1001,40 @@ nodeArr.forEach(function(node) {
 });
 ```
 
+### 3-19
+
+array-like object는 원본 문자열에 변경을 가하는 메서드는 에러를 던지며, concat처럼 대상이 반드시 배열이어야 하는 경우에 에러는 없으나 제대로 된 결과를 얻을 수 없음
+
+```js
+var str = 'abc def';
+
+Array.prototype.push.call(str, ', pushed string');
+// Error: Cannot assign to read only property 'length' of object [object String]
+
+Array.prototype.concat.call(str, 'string'); // [String {"abc def"}, "string"]
+
+Array.prototype.every.call(str, function(char) {
+    return char !== ' ';
+}); // false
+
+Array.prototype.some.call(str, function(char) {
+    return char === ' ';
+}); // true
+
+var newArr = Array.prototype.map.call(str, function(char) {
+    return char + '!';
+});
+console.log(newArr); // ['a!', 'b!', 'c!', ' !', 'd!', 'e!', 'f!']
+
+var newStr = Array.prototype.reduce.apply(str, [
+    function(string, char, i) {
+        return string + char + i;
+    },
+    '',
+]);
+console.log(newStr); // "a0b1c2 3d4e5f6"
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
