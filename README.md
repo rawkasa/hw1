@@ -780,6 +780,20 @@ var obj = {
 obj.method(2); // { method: f } 2
 ```
 
+### 3-7
+
+This는 점 표기법 또는 대괄호 표기법에 상관없이 메서드를 호출한 객체가 됨
+
+```js
+var obj = {
+    method: function(x) {
+        console.log(this, x);
+    },
+};
+obj.method(1); // { method: f } 1
+obj['method'](2); // { method: f } 2
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
