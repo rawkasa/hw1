@@ -13,6 +13,7 @@
 ## 📝 Table of Contents
 
 - [Chatper1](#chapter1)
+- [Chatper2](#chapter2)
 
 ## Chatper1 <a name = "chapter1"></a>
 
@@ -448,6 +449,27 @@ console.log(n == null); // true
 
 console.log(n === undefined); // false
 console.log(n === null); // true
+```
+
+## Chatper2 <a name = "chapter2"></a>
+
+### 2-1
+
+JS는 Declaration과 Expression를 구분하여 구동됨. Declaration을 찾는 것을 Hoisting이라 하며, 이후 Execution이 수행됨. 구체적으로, Globar Execution Context -> Outer Execution Context -> Inner Execution Context 순으로 콜 스택에 쌓임.
+
+```js
+// --------------------------------- (1)
+var a = 1;
+function outer() {
+    function inner() {
+        console.log(a); // undefined
+        var a = 3;
+    }
+    inner(); // -------------------- (2)
+    console.log(a); // 1
+}
+outer(); // ------------------------ (3)
+console.log(a); // 1
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
