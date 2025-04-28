@@ -173,6 +173,20 @@ console.log(user.name, user2.name); // Jaenam Jung
 console.log(user === user2); // false
 ```
 
+### 1-12
+
+아래 함수는 기존 정보를 복사해서 새로운 객체를 반환함
+
+```js
+var copyObject = function(target) {
+    var result = {};
+    for (var prop in target) {
+        result[prop] = target[prop];
+    }
+    return result;
+};
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
