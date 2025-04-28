@@ -596,7 +596,7 @@ d(); // 에러!
 
 ### 2-9
 
-함수 선언문은 전체가 호이스팅되어 미리 준비되므로 console을 통해 함수 호출이 가능하나, 함수 표현식은 선언만 호이스팅되기에 호출 불가능함함
+함수 선언문은 전체가 호이스팅되어 미리 준비되므로 함수 호출이 가능하나, 함수 표현식은 선언만 호이스팅되기에 호출 불가능함
 
 ```js
 console.log(sum(1, 2));
@@ -609,6 +609,25 @@ function sum(a, b) {
 
 var multiply = function(a, b) {
     // 함수 표현식 multiply
+    return a * b;
+};
+```
+
+### 2-10
+
+함수 선언문은 전체가 호이스팅되어 미리 준비되므로 함수 호출이 가능하나, 함수 표현식은 선언만 호이스팅되기에 호출 불가능함 
+
+```js
+var sum = function sum(a, b) {
+    // 함수 선언문은 전체를 호이스팅합니다.
+    return a + b;
+};
+var multiply; // 변수는 선언부만 끌어올립니다.
+console.log(sum(1, 2));
+console.log(multiply(3, 4));
+
+multiply = function(a, b) {
+    // 변수의 할당부는 원래 자리에 남겨둡니다.
     return a * b;
 };
 ```
