@@ -927,6 +927,22 @@ func(1, 2, 3);                  // Window{ ... } 1 2 3
 func.call({ x: 1 }, 4, 5, 6);   // { x: 1 } 4 5 6
 ```
 
+### 3-15
+
+일반적인 메서드 호출시 this는 메서드를 호출한 객체가 되나, call을 사용하면 명시적으로 this를 바인딩 할 수 있음
+
+```js
+var obj = {
+    a: 1,
+    method: function(x, y) {
+        console.log(this.a, x, y);
+    },
+};
+
+obj.method(2, 3);                   // 1 2 3
+obj.method.call({ a: 4 }, 5, 6);    // 4 5 6
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
