@@ -744,7 +744,7 @@ console.log(b, window.b, this.b); // 4 4 4
 
 ### 3-5
 
-전역 객체를 선언할 경우, 해당 프로퍼티의 configurable 속성(변경 및 삭제 가능성)이 false가 됨
+전역 변수를 선언할 경우, 해당 프로퍼티의 configurable 속성(변경 및 삭제 가능성)이 false가 됨
 
 ```js
 var a = 1;
@@ -762,6 +762,22 @@ console.log(c, window.c, this.c); // Uncaught ReferenceError: c is not defined
 window.d = 4;
 delete d; // true
 console.log(d, window.d, this.d); // Uncaught ReferenceError: d is not defined
+```
+
+### 3-6
+
+This는 함수 호출 방식에 따라 값이 결정됨. 일반 함수 호출의 경우 global 값이 나오나, 메서드 호출의 경우 메서드를 호출한 객체가 됨
+
+```js
+var func = function(x) {
+    console.log(this, x);
+};
+func(1); // Window { ... } 1
+
+var obj = {
+    method: func,
+};
+obj.method(2); // { method: f } 2
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
