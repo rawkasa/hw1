@@ -653,6 +653,27 @@ var c = sum(1, 2);
 console.log(c);
 ```
 
+### 2-12
+
+호이스팅 과정에서 변수 선언만 끌어올려지고 나머지 부분은 그대로 남음 
+
+```js
+console.log(sum(3, 4)); // Uncaught Type Error: sum is not a function
+
+var sum = function(x, y) {
+    return x + y;
+};
+
+var a = sum(1, 2);
+
+var sum = function(x, y) {
+    return x + ' + ' + y + ' = ' + (x + y);
+};
+
+var c = sum(1, 2);
+console.log(c);
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
