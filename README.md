@@ -1100,6 +1100,17 @@ var min = Math.min.apply(null, numbers);
 console.log(max, min); // 45 3
 ```
 
+### 3-24
+
+ES6 환경에서는 배열이나 유사배열을 개별 요소로 펼쳐서 전달하는 스프레드 연산자(...) 또한 활용 가능함
+
+```js
+const numbers = [10, 20, 3, 16, 45];
+const max = Math.max(...numbers);
+const min = Math.min(...numbers);
+console.log(max, min); // 45 3
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
