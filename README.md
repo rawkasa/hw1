@@ -914,6 +914,19 @@ Cat { bark: '야옹', name: '나비', age: 5 }
 */
 ```
 
+### 3-14
+
+call 메서드를 사용하면 명시적으로 this를 바인딩 할 수 있음
+
+```js
+var func = function(a, b, c) {
+    console.log(this, a, b, c);
+};
+
+func(1, 2, 3);                  // Window{ ... } 1 2 3
+func.call({ x: 1 }, 4, 5, 6);   // { x: 1 } 4 5 6
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
