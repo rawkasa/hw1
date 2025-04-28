@@ -594,6 +594,25 @@ c(); // 실행 OK.
 d(); // 에러!
 ```
 
+### 2-9
+
+함수 선언문은 전체가 호이스팅되어 미리 준비되므로 console을 통해 함수 호출이 가능하나, 함수 표현식은 선언만 호이스팅되기에 호출 불가능함함
+
+```js
+console.log(sum(1, 2));
+console.log(multiply(3, 4));
+
+function sum(a, b) {
+    // 함수 선언문 sum
+    return a + b;
+}
+
+var multiply = function(a, b) {
+    // 함수 표현식 multiply
+    return a * b;
+};
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
