@@ -189,4 +189,34 @@ var copyObject = function(target) {
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 
+### 1-13
+
+copyObject 함수는 기존 객체의 프로퍼티를 사용해 별개의 참조값을 사용하는 새로운 객체를 반환하기에, 원본 객체에는 영향을 주지 않을 수 있음.
+
+```js
+var copyObject = function(target) {
+    var result = {};
+    for (var prop in target) {
+        result[prop] = target[prop];
+    }
+    return result;
+};
+    
+var user = {
+    name: 'Jaenam',
+    gender: 'male',
+};
+
+var user2 = copyObject(user);
+user2.name = 'Jung';
+
+if (user !== user2) {
+    console.log('유저 정보가 변경되었습니다.'); // 유저 정보가 변경되었습니다.
+}
+console.log(user.name, user2.name); // Jaenam Jung
+console.log(user === user2); // false
+```
+
+## Acknowledgements <a name = "acknowledgement"></a>
+
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
