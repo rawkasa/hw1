@@ -1050,6 +1050,27 @@ var arr = Array.from(obj);
 console.log(arr); // ['a', 'b', 'c']
 ```
 
+### 3-21
+
+call/apply 메서드를 활용하면 this를 통해 생성자 내부에서 다른 생성자를 호출하고 부모 생성자의 속성을 상속받을 수 있음
+
+```js
+function Person(name, gender) {
+    this.name = name;
+    this.gender = gender;
+}
+function Student(name, gender, school) {
+    Person.call(this, name, gender);
+    this.school = school;
+}
+function Employee(name, gender, company) {
+    Person.apply(this, [name, gender]);
+    this.company = company;
+}
+var by = new Student('보영', 'female', '단국대');
+var jn = new Employee('재난', 'male', '구골');
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
