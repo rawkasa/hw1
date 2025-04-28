@@ -381,6 +381,22 @@ var c = func(); // (3) 반환(return)값이 없으면 undefined를 반환한 것
 console.log(c); // undefined
 ```
 
+### 1-20
+
+빈 배열은 빈 슬롯(empty slot)으로 처리하며, 다만 undefined는 명시적으로 값임. 다만, 동일한 falsy값이자 의도적으로 비어있음을 표현하는 null을 써야 함.
+
+```js
+var arr1 = [];
+arr1.length = 3;
+console.log(arr1); // [empty x 3]
+
+var arr2 = new Array(3);
+console.log(arr2); // [empty x 3]
+
+var arr3 = [undefined, undefined, undefined];
+console.log(arr3); // [undefined, undefined, undefined]
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
