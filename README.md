@@ -705,8 +705,6 @@ console.log(window); // { alert: f(), atob: f(), blur: f(), btoa: f(), ... }
 console.log(this === window); // true
 ```
 
-## Acknowledgements <a name = "acknowledgement"></a>
-
 ### 3-2
 
 전역 공간에서의 This는 전역 객체를 가리킴. 전역 컨텍스트를 생성하는 주체가 전역 객체이기 때문
@@ -715,6 +713,17 @@ console.log(this === window); // true
 console.log(this); // { process: { title: 'node', version: 'v10.13.0',... } }
 console.log(global); // { process: { title: 'node', version: 'v10.13.0',... } }
 console.log(this === global); // true
+```
+
+### 3-3
+
+전역 변수가 선언될 경우, 역시 This는 window를 가리킴
+
+```js
+var a = 1;
+console.log(a); // 1
+console.log(window.a); // 1
+console.log(this.a); // 1
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
