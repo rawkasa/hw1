@@ -488,6 +488,22 @@ function a(x) {
 a(1);
 ```
 
+### 2-3
+
+같은 변수 이름으로 여러 번 선언되면 호이스팅 단계에서 한 번만 선언된 것으로 간주됨.
+
+```js
+function a() {
+    var x = 1; // 수집 대상 1(매개변수 선언)
+    console.log(x); // (1)
+    var x; // 수집 대상 2(변수 선언)
+    console.log(x); // (2)
+    var x = 2; // 수집 대상 3(변수 선언)
+    console.log(x); // (3)
+}
+a();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
