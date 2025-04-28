@@ -523,6 +523,21 @@ function a() {
 a(1);
 ```
 
+### 2-5
+
+호이스팅시 함수 선언은 변수 선언보다 우선적으로 처리됨 
+
+```js
+function a() {
+    console.log(b); // (1)
+    var b = 'bbb'; // 수집 대상 1(변수 선언)
+    console.log(b); // (2)
+    function b() {} // 수집 대상 2(함수 선언)
+    console.log(b); // (3)
+}
+a();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
