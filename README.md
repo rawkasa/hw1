@@ -298,6 +298,40 @@ var copyObjectDeep = function(target) {
 };  
 ```
 
+### 1-17
+
+재귀적 깊은 복사를 수행하는 함수. 다만, 배열(array)을 처리하는 부분이 누락되어 있어 배열을 객체{}로 잘못 복사하게 됨.
+
+```js
+var copyObjectDeep = function(target) {
+var result = {};
+    if (typeof target === 'object' && target !== null) {
+        for (var prop in target) {
+            result[prop] = copyObjectDeep(target[prop]);
+        }
+    } else {
+        result = target;
+    }
+    return result;
+};
+
+var obj = {
+    a: 1,
+    b: {
+        c: null,
+        d: [1, 2],
+    },
+};
+var obj2 = copyObjectDeep(obj);
+
+obj2.a = 3;
+obj2.b.c = 4;
+obj.b.d[1] = 3;
+
+console.log(obj); // { a: 1. b: { c: null, d: [1, 3] } }
+console.log(obj2); // { a: 3. b: { c: 4, d: { 0: 1, 1: 2 } } }  
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
