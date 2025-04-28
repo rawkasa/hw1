@@ -707,4 +707,16 @@ console.log(this === window); // true
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 
+### 3-2
+
+전역 공간에서의 This는 전역 객체를 가리킴. 전역 컨텍스트를 생성하는 주체가 전역 객체이기 때문
+
+```js
+console.log(this); // { process: { title: 'node', version: 'v10.13.0',... } }
+console.log(global); // { process: { title: 'node', version: 'v10.13.0',... } }
+console.log(this === global); // true
+```
+
+## Acknowledgements <a name = "acknowledgement"></a>
+
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
