@@ -894,6 +894,26 @@ document.body.querySelector('#a')
     });
 ```
 
+### 3-13
+
+생성자 함수 내부에서 This는 새롭게 생성되는 객체를 가리킴
+
+```js
+var Cat = function(name, age) {
+    this.bark = '야옹';
+    this.name = name;
+    this.age = age;
+};
+var choco = new Cat('초코', 7);
+var nabi = new Cat('나비', 5);
+console.log(choco, nabi);
+
+/* 결과
+Cat { bark: '야옹', name: '초코', age: 7 }
+Cat { bark: '야옹', name: '나비', age: 5 }
+*/
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
