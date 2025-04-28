@@ -108,6 +108,20 @@ b = 15;
 obj2.c = 20;
 ```
 
+### 1-9
+
+Primitive type 데이터를 복사 후 변경해도 반영되지 않음. 더불어, 객체를 복사 후 재할당하면 참조값 자체가 변경되기에, 데이터를 변경하여도 이는 원본 데이터에 반영되지 않음(독립적).
+
+```js
+var a = 10;
+var b = a;
+var obj1 = {c: 10, d: 'ddd'};
+var obj2 = obj1;
+
+b = 15;
+obj2 = {c: 20, d: 'ddd'};
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
