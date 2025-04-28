@@ -332,6 +332,37 @@ console.log(obj); // { a: 1. b: { c: null, d: [1, 3] } }
 console.log(obj2); // { a: 3. b: { c: 4, d: { 0: 1, 1: 2 } } }  
 ```
 
+### 1-18
+
+JSON을 통해 깊은 복사를 수행하는 방법. 다만, 이 경우 일부 데이터(함수 등)을 복사하지 못하고 제거(누락)됨.
+
+```js
+var copyObjectViaJSON = function(target) {
+    return JSON.parse(JSON.stringify(target));
+};
+var obj = {
+    a: 1,
+    b: {
+        c: null,
+        d: [1, 2],
+        func1: function() {
+            console.log(3);
+        },
+    },
+    func2: function() {
+        console.log(4);
+    },
+};
+var obj2 = copyObjectViaJSON(obj);
+
+obj2.a = 3;
+obj2.b.c = 4;
+obj.b.d[1] = 3;
+
+console.log(obj); // { a: 1. b: { c: null, d: [1, 3], func1: f() }, func2: f() }
+console.log(obj2); // { a: 3. b: { c: 4,    d: [1, 2] } }
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
