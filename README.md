@@ -726,6 +726,22 @@ console.log(window.a); // 1
 console.log(this.a); // 1
 ```
 
+### 3-4
+
+자바스크립트의 모든 변수는 특정 객체의 프로퍼티로서 동작함. 
+
+```js
+var a = 1;
+window.b = 2;
+console.log(a, window.a, this.a); // 1 1 1
+console.log(b, window.b, this.b); // 2 2 2
+
+window.a = 3;
+b = 4;
+console.log(a, window.a, this.a); // 3 3 3
+console.log(b, window.b, this.b); // 4 4 4
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
