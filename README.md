@@ -82,6 +82,18 @@ var obj = {
 };
 ```
 
+### 1-7
+
+Primitive Type은 값 자체를 복사함. 그러나, 객체는 참조값을 복사함.
+
+```js
+var a = 10;
+var b = a; // b = 10
+
+var obj1 = {C: 10, d: 'ddd'};
+var obj2 = obj1; // obj2 = {C: 10, d: 'ddd'}
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
