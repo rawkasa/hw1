@@ -94,6 +94,20 @@ var obj1 = {C: 10, d: 'ddd'};
 var obj2 = obj1; // obj2 = {C: 10, d: 'ddd'}
 ```
 
+### 1-8
+
+Primitive type 데이터를 복사할 경우, 복사된 데이터를 변경하여도 원본 데이터는 변경되지 않으나, 참조형 데이터를 복사할 경우 단순 값이 아닌 참조값을 복사한 것이기에 복사된 데이터를 변경하면 변경 내용이 원본에도 공유됨. 
+
+```js
+var a = 10;
+var b = a;
+var obj1 = {c: 10, d: 'ddd'};
+var obj2 = obj1;
+
+b = 15;
+obj2.c = 20;
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
