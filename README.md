@@ -1035,6 +1035,21 @@ var newStr = Array.prototype.reduce.apply(str, [
 console.log(newStr); // "a0b1c2 3d4e5f6"
 ```
 
+### 3-20
+
+Array.from() 메서드는 array-like object를 실제 배열로 변환하여 배열 메서드를 활용할 수 있도록 함
+
+```js
+var obj = {
+    0: 'a',
+    1: 'b',
+    2: 'c',
+    length: 3,
+};
+var arr = Array.from(obj);
+console.log(arr); // ['a', 'b', 'c']
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
