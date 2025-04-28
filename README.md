@@ -50,13 +50,25 @@ b = 7;          // 변수 b에 데이터 재할당, b = 7
 
 ### 1-4
 
-객체(Object)는 참조형 데이터로, 변수에 객체의 주소(참조값)가 저장됨됨
+객체(Object)는 참조형 데이터로, 변수에 객체의 주소(참조값)가 저장됨
 
 ```js
 var obj1 = {
     a: 1,
     b: 'bbb',
 };
+```
+
+### 1-5
+
+객체{}는 참조형 데이터이며, 변수 obj1은 객체 자체가 아닌 참조값을 저장함. 이 때, a가 상수(constant)라면 변경불가능(immutable)한 기본형(primitive type)임.
+
+```js
+var obj1 = {
+    a: 1,
+    b: 'bbb',
+};
+obj1.a = 2;
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
