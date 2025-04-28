@@ -859,6 +859,23 @@ var obj = {
 obj.outer();
 ```
 
+### 3-11
+
+Arrow Function을 사용시 This가 존재하지 않아, Scope chain을 따라서 This를 찾음
+
+```js
+var obj = {
+    outer: function() {
+      console.log(this);        // (1) { outer: f }
+        var innerFunc = () => {
+            console.log(this);  // (2) { outer: f }
+        };
+        innerFunc();
+    },
+};
+obj.outer();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
