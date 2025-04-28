@@ -1071,6 +1071,24 @@ var by = new Student('보영', 'female', '단국대');
 var jn = new Employee('재난', 'male', '구골');
 ```
 
+### 3-22
+
+배열에서 최대/최솟값을 수해야 할 경우 apply를 사용하지 않는다면 길고 가독성 떨어지는 방식으로 직접 구현해야 함
+
+```js
+var numbers = [10, 20, 3, 16, 45];
+var max = (min = numbers[0]);
+numbers.forEach(function(number) {
+    if (number > max) {
+        max = number;
+    }
+    if (number < min) {
+        min = number;
+    }
+});
+console.log(max, min); // 45 3
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
