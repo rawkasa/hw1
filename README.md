@@ -632,6 +632,27 @@ multiply = function(a, b) {
 };
 ```
 
+### 2-11
+
+함수 선언문이 중복 선언될 경우 호이스팅 과정에서서 나중에 선언된 함수가 앞서 선언된 함수를 덮어씀 
+
+```js
+console.log(sum(3, 4));
+
+function sum(x, y) {
+    return x + y;
+}
+
+var a = sum(1, 2);
+
+function sum(x, y) {
+    return x + ' + ' + y + ' = ' + (x + y);
+}
+
+var c = sum(1, 2);
+console.log(c);
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
