@@ -504,6 +504,25 @@ function a() {
 a();
 ```
 
+### 2-4
+
+중복된 변수 선언은 호이스팅 단계에서 맨 위에서 한 번만 선언된 것으로 간주됨. 더불어, 함수 호출 시 인자 개수가 매개변수보다 많으면 초과 인자는 무시됨.
+
+```js
+function a() {
+    var x; // 수집 대상 1의 변수 선언 부분
+    var x; // 수집 대상 2의 변수 선언 부분
+    var x; // 수집 대상 3의 변수 선언 부분
+
+    x = 1; // 수집 대상 1의 할당 부분
+    console.log(x); // (1)
+    console.log(x); // (2)
+    x = 2; // 수집 대상 3의 할당 부분
+    console.log(x); // (3)
+}
+a(1);
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
