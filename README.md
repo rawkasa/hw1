@@ -363,6 +363,24 @@ console.log(obj); // { a: 1. b: { c: null, d: [1, 3], func1: f() }, func2: f() }
 console.log(obj2); // { a: 3. b: { c: 4,    d: [1, 2] } }
 ```
 
+### 1-19
+
+선언된 변수에 값이 없으면 undefined가 기본 할당되어 접근시 undefined값을 반환함. 그러나, 존재하지 않는 프로퍼티에 접근시 에러를 반환함. 또한, 함수가 아무 값도 반환하지 않으면 undefined가 반환됨.
+
+```js
+var a;
+console.log(a); // (1) undefined. 값을 대입하지 않은 변수에 접근
+
+var obj = { a: 1 };
+console.log(obj.a); // 1
+console.log(obj.b); // (2) 존재하지 않는 프로퍼티에 접근
+console.log(b); // c.f) ReferenceError: b is not defined
+
+var func = function() {};
+var c = func(); // (3) 반환(return)값이 없으면 undefined를 반환한 것으로 간주.
+console.log(c); // undefined
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
