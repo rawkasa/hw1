@@ -14,6 +14,7 @@
 
 - [Chatper1](#chapter1)
 - [Chatper2](#chapter2)
+- [Chatper3](#chapter3)
 
 ## Chatper1 <a name = "chapter1"></a>
 
@@ -676,7 +677,7 @@ console.log(c);
 
 ### 2-13
 
-호이스팅 과정에서 변수 선언이 맨 위로 끌어올려지며, 이 때 함수 내부에서 선언된 변수는 내부 함수의 지역 변수로서 전역 변수 를 가림
+Identifier는 Scope(r/w)와 Lifetime(Callstack)으로 나뉘며, 함수 내부에서 선언된 변수는 내부 함수의 지역 변수로서 전역 변수를 가림
 
 ```js
 var a = 1;
@@ -690,6 +691,18 @@ var outer = function() {
 };
 outer();
 console.log(a);
+```
+
+## Chatper3 <a name = "chapter3"></a>
+
+### 3-1
+
+전역 공간에서의 This는 전역 객체를 가리킴
+
+```js
+console.log(this); // { alert: f(), atob: f(), blur: f(), btoa: f(), ... }
+console.log(window); // { alert: f(), atob: f(), blur: f(), btoa: f(), ... }
+console.log(this === window); // true
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
