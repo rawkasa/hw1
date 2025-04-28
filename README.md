@@ -980,6 +980,27 @@ var arr = Array.prototype.slice.call(obj);
 console.log(arr);                           // [ 'a', 'b', 'c', 'd' ]
 ```
 
+### 3-18
+
+array-like object는 직접 배열 메서드를 사용할 수 없으나, 배열 변환법을 사용해 실제 배열로 변환할 수 있으며, 이를 통해 배열 메서드를 활용할 수 있음
+
+```js
+function a() {
+    var argv = Array.prototype.slice.call(arguments);
+    argv.forEach(function(arg) {
+        console.log(arg);
+    });
+}
+a(1, 2, 3);
+
+document.body.innerHTML = '<div>a</div><div>b</div><div>c</div>';
+var nodeList = document.querySelectorAll('div');
+var nodeArr = Array.prototype.slice.call(nodeList);
+nodeArr.forEach(function(node) {
+    console.log(node);
+});
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
