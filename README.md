@@ -472,6 +472,22 @@ outer(); // ------------------------ (3)
 console.log(a); // 1
 ```
 
+### 2-2
+
+해당 함수에서는 각 순서대로 1, undefined, 2가 출력될 것 같으나, 실제로는 1, 1, 2가 출력됨. 이는 Execution Context 상 함수 내에서 매개변수와 변수 선언은 함수 맨 위로 끌어올려져(호이스팅) 처리되기 때문.
+
+```js
+function a(x) {
+    // 수집 대상 1(매개변수)
+    console.log(x); // (1)
+    var x; // 수집 대상 2(변수 선언)
+    console.log(x); // (2)
+    var x = 2; // 수집 대상 3(변수 선언)
+    console.log(x); // (3)
+}
+a(1);
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
