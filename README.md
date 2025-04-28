@@ -943,6 +943,25 @@ obj.method(2, 3);                   // 1 2 3
 obj.method.call({ a: 4 }, 5, 6);    // 4 5 6
 ```
 
+### 3-16
+
+apply를 사용하면 명시적으로 첫 번째 인자로 this를 바인딩하며 두 번째 매개변수를 배열 형태로 전달함
+
+```js
+var func = function(a, b, c) {
+    console.log(this, a, b, c);
+};
+func.apply({ x: 1 }, [4, 5, 6]);    // { x: 1 } 4 5 6
+
+var obj = {
+    a: 1,
+    method: function(x, y) {
+        console.log(this.a, x, y);
+    },
+};
+obj.method.apply({ a: 4 }, [5, 6]); // 4 5 6
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
