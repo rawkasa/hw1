@@ -187,8 +187,6 @@ var copyObject = function(target) {
 };
 ```
 
-## Acknowledgements <a name = "acknowledgement"></a>
-
 ### 1-13
 
 copyObject 함수는 기존 객체의 프로퍼티를 사용해 별개의 참조값을 사용하는 새로운 객체를 반환하기에, 원본 객체에는 영향을 주지 않을 수 있음.
@@ -280,6 +278,24 @@ console.log(user.urls.portfolio === user2.urls.portfolio); // false
 
 user2.urls.blog = '';
 console.log(user.urls.blog === user2.urls.blog); // false  
+```
+
+### 1-16
+
+객체의 깊은 복사를 수행하는 범용 함수
+
+```js
+var copyObjectDeep = function(target) {
+    var result = {};
+    if (typeof target === 'object' && target !== null) {
+        for (var prop in target) {
+            result[prop] = copyObjectDeep(target[prop]);
+        }
+    } else {
+        result = target;
+    }
+    return result;
+};  
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
