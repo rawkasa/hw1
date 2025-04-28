@@ -538,6 +538,23 @@ function a() {
 a();
 ```
 
+### 2-6
+
+호이스팅시 함수 선언은 변수 선언보다 우선적으로 전체(선언+정의)가 처리되며, 변수 선언은 선언부만 처리됨
+
+```js
+function a() {
+    var b; // 수집 대상 1. 변수는 선언부만 끌어올립니다.
+    function b() {} // 수집 대상 2. 함수 선언은 전체를 끌어올립니다.
+
+    console.log(b); // (1)
+    b = 'bbb'; // 변수의 할당부는 원래 자리에 남겨둡니다.
+    console.log(b); // (2)
+    console.log(b); // (3)
+}
+a();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
