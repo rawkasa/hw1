@@ -71,6 +71,17 @@ var obj1 = {
 obj1.a = 2;
 ```
 
+### 1-6
+
+중첩된 참조형 객체의 경우, 배열 자체가 아닌 참조값을 저장함.
+
+```js
+var obj = {
+    x: 3,
+    arr: [3, 4, 5],
+};
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
