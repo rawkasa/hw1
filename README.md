@@ -250,6 +250,38 @@ user2.urls.blog = '';
 console.log(user.urls.blog === user2.urls.blog); // true
 ```
 
+### 1-15
+
+이 경우, 최상위 객체와 중첩된 객체(urls)를 별도로 한 번 더 복사 및 할당함. 따라서 user.urls와 user2.urls는 각각 독립적인 객체를 참조하나, 그 아래 단계의 객체(user.urls.portfolio, blog, facebook)은 여전히 얕은 복사가 이루어졌기에에 독립적이지 못함.
+
+```js
+var copyObject = function(target) {
+    var result = {};
+    for (var prop in target) {
+        result[prop] = target[prop];
+    }
+    return result;
+};
+    
+var user = {
+    name: 'Jaenam',
+    urls: {
+        portfolio: 'http://github.com/abc',
+        blog: 'http://blog.com',
+        facebook: 'http://facebook.com/abc',
+    },
+};
+
+var user2 = copyObject(user);
+user2.urls = copyObject(user.urls);
+
+user.urls.portfolio = 'http://portfolio.com';
+console.log(user.urls.portfolio === user2.urls.portfolio); // false
+
+user2.urls.blog = '';
+console.log(user.urls.blog === user2.urls.blog); // false  
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
