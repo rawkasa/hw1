@@ -20,8 +20,19 @@
 
 객체의 선언
 
-```
+```js
 var a;  // 변수 a
+```
+
+### 1-2
+
+참조값과 데이터 내에는 변경되는 것과 불변적인 성질이 따로 존재함함
+
+```js
+var a;          // 변수 a 선언
+a = 'abc';      // 변수 a에 데이터 할당
+
+var a = 'abc';  // 변수 선언과 할당을 한 문장으로 표현
 ```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
