@@ -794,6 +794,26 @@ obj.method(1); // { method: f } 1
 obj['method'](2); // { method: f } 2
 ```
 
+### 3-8
+
+This는 메서드 호출 시점에 따라 대상 객체가 달라짐
+
+```js
+var obj = {
+    methodA: function() { console.log(this); },
+    inner: {
+        methodB: function() { console.log(this); },
+    },
+};
+obj.methodA();              // { methodA: f, inner: {...} } ( === obj)
+obj['methodA']();           // { methodA: f, inner: {...} } ( === obj)
+
+obj.inner.methodB();        // { methodB: f }               ( === obj.inner)
+obj.inner['methodB']();     // { methodB: f }               ( === obj.inner)
+obj['inner'].methodB();     // { methodB: f }               ( === obj.inner)
+obj['inner']['methodB']();  // { methodB: f }               ( === obj.inner)
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
