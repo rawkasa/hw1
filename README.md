@@ -435,6 +435,21 @@ arr2.reduce(function(p, c, i) {
 }, ''); // 11
 ```
 
+### 1-22
+
+null은 primitive인 falsy임에도 버그로 인해 typeof에서 object를 반환함. ==는 형변환을 수행하기에 null과 undefined를 같다고 판단하나, ===는 타입과 값까지 정확히 비교해 null과 undefined를 다르다고 판단함.
+
+```js
+var n = null;
+console.log(typeof n); // object
+
+console.log(n == undefined); // true
+console.log(n == null); // true
+
+console.log(n === undefined); // false
+console.log(n === null); // true
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
