@@ -147,6 +147,32 @@ console.log(user.name, user2.name); // Jung Jung
 console.log(user === user2); // true
 ```
 
+### 1-11
+
+이 경우 새로운 객체를 만들게 됨. 다만, 하드코딩 되었음.
+
+```js
+var user = {
+    name: 'Jaenam',
+    gender: 'male',
+};
+
+var changeName = function(user, newName) {
+    return {
+    name: newName,
+    gender: user.gender,
+    };
+};
+
+var user2 = changeName(user, 'Jung');
+
+if (user !== user2) {
+    console.log('유저 정보가 변경되었습니다.'); // 유저 정보가 변경되었습니다.
+}
+console.log(user.name, user2.name); // Jaenam Jung
+console.log(user === user2); // false
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
