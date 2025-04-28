@@ -814,6 +814,51 @@ obj['inner'].methodB();     // { methodB: f }               ( === obj.inner)
 obj['inner']['methodB']();  // { methodB: f }               ( === obj.inner)
 ```
 
+### 3-9
+
+This는 일반 함수 호출시 전역 객체를 가져오나, 메서드 호출 시 호출한 객체를 가져옴
+
+```js
+var obj1 = {
+    outer: function() {
+        console.log(this); // (1)
+        var innerFunc = function() {
+            console.log(this); // (2) (3)
+        };
+        innerFunc();
+    
+        var obj2 = {
+            innerMethod: innerFunc,
+        };
+        obj2.innerMethod();
+    },
+};
+obj1.outer();
+```
+
+### 3-10
+
+일반 함수인 내부 함수 호출시 This는 기본적으로 전역 객체를 가져오며, 내부 함수에서 외부 메서드의 This를 가져오려면 self를 사용해야 함
+
+```js
+var obj = {
+    outer: function() {
+        console.log(this);              // (1) { outer: f }
+        var innerFunc1 = function() {
+            console.log(this);          // (2) Window { ... }
+        };
+        innerFunc1();
+    
+        var self = this;
+        var innerFunc2 = function() {
+            console.log(self);          // (3) { outer: f }
+        };
+        innerFunc2();
+    },
+};
+obj.outer();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
