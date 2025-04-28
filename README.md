@@ -48,6 +48,17 @@ var c = 5;
 b = 7;          // 변수 b에 데이터 재할당, b = 7
 ```
 
+### 1-4
+
+객체(Object)는 참조형 데이터로, 변수에 객체의 주소(참조값)가 저장됨됨
+
+```js
+var obj1 = {
+    a: 1,
+    b: 'bbb',
+};
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
