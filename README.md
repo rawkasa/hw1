@@ -555,6 +555,23 @@ function a() {
 a();
 ```
 
+### 2-7
+
+호이스팅시 함수 표현식은 끌어올려지지 않고 그대로 남음
+
+```js
+function a() {
+    var b;
+    var b = function b() {}; // <- 바뀐 부분
+
+    console.log(b); // (1)
+    b = 'bbb';
+    console.log(b); // (2)
+    console.log(b); // (3)
+}
+a();
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
