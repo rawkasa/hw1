@@ -674,6 +674,24 @@ var c = sum(1, 2);
 console.log(c);
 ```
 
+### 2-13
+
+호이스팅 과정에서 변수 선언이 맨 위로 끌어올려지며, 이 때 함수 내부에서 선언된 변수는 내부 함수의 지역 변수로서 전역 변수 를 가림
+
+```js
+var a = 1;
+var outer = function() {
+    var inner = function() {
+        console.log(a);
+        var a = 3;
+    };
+    inner();
+    console.log(a);
+};
+outer();
+console.log(a);
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
