@@ -217,6 +217,39 @@ console.log(user.name, user2.name); // Jaenam Jung
 console.log(user === user2); // false
 ```
 
+### 1-14
+
+중첩된 객체의 경우, 얕은 복사 과정에서 복사되지 않고 참조값만 복사됨. 즉, 아래의 user.urls(urls.portfolio, urls.blog, urls.facebook)는 서로 공유됨. 이를 해결하기 위해서는 깊은 복사가 필요함.
+
+```js
+var copyObject = function(target) {
+    var result = {};
+    for (var prop in target) {
+        result[prop] = target[prop];
+    }
+    return result;
+};
+    
+var user = {
+    name: 'Jaenam',
+    urls: {
+        portfolio: 'http://github.com/abc',
+        blog: 'http://blog.com',
+        facebook: 'http://facebook.com/abc',
+    },
+};
+var user2 = copyObject(user);
+user2.name = 'Jung';
+    
+console.log(user.name === user2.name); // false
+
+user.urls.portfolio = 'http://portfolio.com';
+console.log(user.urls.portfolio === user2.urls.portfolio); // true
+
+user2.urls.blog = '';
+console.log(user.urls.blog === user2.urls.blog); // true
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
