@@ -962,6 +962,24 @@ var obj = {
 obj.method.apply({ a: 4 }, [5, 6]); // 4 5 6
 ```
 
+### 3-17
+
+array-like object는 인덱스를 키로 가지며, length 속성을 가지고 있음. 이 때 call 메서드를 사용하면 객체에도 배열처럼 동작하여 값을 추가하거나 길이를 조정할 수 있음. 이를 통해 배열 메서드를 일반 객체에 활용 가능함
+
+```js
+var obj = {
+    0: 'a',
+    1: 'b',
+    2: 'c',
+    length: 3,
+};
+Array.prototype.push.call(obj, 'd');
+console.log(obj);                           // { 0: 'a', 1: 'b', 2: 'c', 3: 'd', length: 4 }
+
+var arr = Array.prototype.slice.call(obj);
+console.log(arr);                           // [ 'a', 'b', 'c', 'd' ]
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
