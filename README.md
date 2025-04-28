@@ -1089,6 +1089,17 @@ numbers.forEach(function(number) {
 console.log(max, min); // 45 3
 ```
 
+### 3-23
+
+배열 등 여러 인수를 받는 메서드에 apply를 적용하면 간단하고 가독성 좋게 구성할 수 있음
+
+```js
+var numbers = [10, 20, 3, 16, 45];
+var max = Math.max.apply(null, numbers);
+var min = Math.min.apply(null, numbers);
+console.log(max, min); // 45 3
+```
+
 ## Acknowledgements <a name = "acknowledgement"></a>
 
 - 코어 자바스크립트 (https://product.kyobobook.co.kr/detail/S000001766397)
