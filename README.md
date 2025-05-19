@@ -15,6 +15,9 @@
 - [Chatper1](#chapter1)
 - [Chatper2](#chapter2)
 - [Chatper3](#chapter3)
+- [Chatper4](#chapter4)
+
+# HW1
 
 ## Chatper1 <a name = "chapter1"></a>
 
@@ -1110,6 +1113,20 @@ const max = Math.max(...numbers);
 const min = Math.min(...numbers);
 console.log(max, min); // 45 3
 ```
+
+# HW2
+
+## Chatper4 <a name = "chapter4"></a>
+
+### 4-1
+
+객체의 선언
+
+```js
+var a;  // 변수 a
+```
+
+
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 
