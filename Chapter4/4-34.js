@@ -12,5 +12,13 @@ function* generatePasswordCodes() {
 
     // a..z
     yield* generateSequence(97, 122);
-    
+
 }
+
+let str = '';
+
+for(let code of generatePasswordCodes()) {
+    str += String.fromCharCode(code);
+}
+
+alert(str); // 0..9A..Za..z
