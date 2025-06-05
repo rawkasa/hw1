@@ -1120,13 +1120,691 @@ console.log(max, min); // 45 3
 
 ### 4-1
 
-객체의 선언
+setInverval은 정해진 시간 간격마다 특정 동작을 반복적으로 실행할 때 사용되는 함수. 이에 따라, 콜백함수가 반복 실행되며, 반복 중지 조건을 설정할 때 조건문을 활용할 수 있음.
 
 ```js
-var a;  // 변수 a
+var count = 0;
+var timer = setInterval(function() {
+    console.log(count);
+    if (++count > 4) clearInterval(timer);
+}, 300);
 ```
 
+### 4-2
 
+콜백함수는 별도의 변수로 정의해두고 명시적으로 사용할 수 있음.
+
+```js
+var count = 0;
+var cbFunc = function() {
+    console.log(count);
+    if (++count > 4) clearInterval(timer);
+};
+var timer = setInterval(cbFunc, 300);
+
+// -- 실행 결과 --
+// 0  (0.3초)
+// 1  (0.6초)
+// 2  (0.9초)
+// 3  (1.2초)
+// 4  (1.5초)
+```
+
+### 4-3
+
+map() 메서드는 콜백에서 반환된 값을 모아 새로운 배열을 만듦.
+
+```js
+var newArr = [10, 20, 30].map(function(currentValue, index) {
+    console.log(currentValue, index);
+    return currentValue + 5;
+});
+console.log(newArr);
+
+// -- 실행 결과 --
+// 10 0
+// 20 1
+// 30 2
+// [15, 25, 35]
+```
+
+### 4-4
+
+map() 메서드에 명시적으로 변수를 설정해도 변화하지 않으며, 순서가 중요함.
+
+```js
+var newArr2 = [10, 20, 30].map(function(index, currentValue) {
+    console.log(index, currentValue);
+    return currentValue + 5;
+});
+console.log(newArr2);
+
+// -- 실행 결과 --
+// 10 0
+// 20 1
+// 30 2
+// [5, 6, 7]
+```
+
+### 4-5
+
+map() 메서드를 사용할 때, 콜백 함수와 this를 활용하여 바인딩 및 반복작업 처리가 가능함.
+
+```js
+Array.prototype.map = function(callback, thisArg) {
+    var mappedArr = [];
+    for (var i = 0; i < this.length; i++) {
+        var mappedValue = callback.call(thisArg || window, this[i], i, this);
+        mappedArr[i] = mappedValue;
+    }
+    return mappedArr;
+};
+```
+
+### 4-6
+
+map() 메서드를 사용할 때, 콜백 함수와 this를 활용하여 바인딩 및 반복작업 처리가 가능함.
+
+```js
+Array.prototype.map = function(callback, thisArg) {
+    var mappedArr = [];
+    for (var i = 0; i < this.length; i++) {
+        var mappedValue = callback.call(thisArg || window, this[i], i, this);
+        mappedArr[i] = mappedValue;
+    }
+    return mappedArr;
+};
+```
+
+### 4-7
+
+map() 메서드를 사용할 때, 콜백 함수와 this를 활용하여 바인딩 및 반복작업 처리가 가능함.
+
+```js
+Array.prototype.map = function(callback, thisArg) {
+    var mappedArr = [];
+    for (var i = 0; i < this.length; i++) {
+        var mappedValue = callback.call(thisArg || window, this[i], i, this);
+        mappedArr[i] = mappedValue;
+    }
+    return mappedArr;
+};
+```
+
+### 4-8
+
+콜백 함수를 나중에 실행할 경우, this가 변경될 수 있으며, 따라서 클로저를 사용해서 this를 콜백 함수 등에서 참조하여 해결할 수 있음.
+
+```js
+var obj1 = {
+    name: 'obj1',
+    func: function() {
+        var self = this;
+        return function() {
+            console.log(self.name);
+        };
+    },
+};
+var callback = obj1.func();
+setTimeout(callback, 1000);
+```
+
+### 4-9
+
+콜백 시 this가 바뀌는 문제를 해결하기 위해서는 객체 식별자를 따로 지정하는 것이 효과적임.
+
+```js
+var obj1 = {
+    name: 'obj1',
+    func: function() {
+        console.log(obj1.name);
+    },
+};
+setTimeout(obj1.func, 1000);
+```
+
+### 4-10
+
+메서드가 어느 객체를 통해 호출되었는지에 따라 this가 달라지며, 클로저를 사용해 this를 캡처하면 이후 함수가 실행되어도 원래 값을 유지할 수 있음.
+
+```js
+var obj1 = {
+    name: 'obj1',
+    func: function() {
+        var self = this;
+        return function() {
+            console.log(self.name);
+        };
+    }
+};
+var callback = obj1.func();
+setTimeout(callback, 1000);
+
+var obj2 = {
+    name: 'obj2',
+    func: obj1.func,
+};
+var callback2 = obj2.func();
+setTimeout(callback2, 1500);
+
+var obj3 = { name: 'obj3' };
+var callback3 = obj1.func.call(obj3);
+setTimeout(callback3, 2000);
+```
+
+### 4-11
+
+콜백 함수로 메서드를 전달할 때 bind() 메서드를 사용하면 함수 내부 this를 영구적으로 특정 객체(obj1, obj2)로 고정시킬 수 있음.
+
+```js
+var obj1 = {
+    name: 'obj1',
+    func: function() {
+        console.log(this.name);
+    },
+};
+setTimeout(obj1.func.bind(obj1), 1000);
+
+var obj2 = { name: 'obj2' };
+setTimeout(obj1.func.bind(obj2), 1500);
+```
+
+### 4-12
+
+setTimeout은 timer를 사용하는 대표적 WebAPI로, 이벤트 루프를 통해 콜 스택(call stack)이 비워지면 콜백을 실행함. 해당 예제의 경우, 실행되자 마자 Hi와 Bye가 출력 되고, 5초 후 cb1이 출력됨.
+
+```js
+console.log('Hi');
+setTimeout(function cb1() {
+    console.log('cb1');
+}, 5000);
+console.log('Bye');
+```
+
+### 4-13
+
+이 경우, 대기 시간은 0으로 설정되었으나, 콜 스택이 비워진 후 setTimeout 함수가 작동되어 순서대로 Hi, Bye, Callback이 출력됨.
+
+```js
+console.log('Hi');
+setTimeout(function() {
+    console.log('Callback');
+}, 0);
+console.log('Bye');
+```
+
+### 4-14
+
+Promise의 내부에서, state는 {fulfilled, rejected, pending} 중 하나의 값을 가짐. 이 때, Promise가 한번 resolve 또는 reject 상태로 결정되면 이후에는 상태가 변경되지 않음.
+
+```js
+const p = new Promise((resolve, reject) => {
+    resolve("foo");
+    // The below 'reject()' is a no-op. A fulfilled promise stays
+    // fulfilled with the same value forever.
+    reject(new Error("bar"));
+});
+```
+
+### 4-15
+
+한번 reject된 Promise에서 성공 콜백(onFulfilled)은 실행되지 않으며, 에러는 그대로 전파됨.
+
+```js
+const originalError = new Error("Oops!");
+const p = new Promise((_, reject) => reject(originalError))
+    .then(() => console.log("This will not print"))
+    .then(() => console.log("Nor will this"))
+    // onFulfilled()들은 계속 지나치고,
+    // 위 then() promise 각각은 originalError로 reject 합니다.
+    .catch((err) => asserts.ok(err === originalError));
+```
+
+### 4-16
+
+finally() 메서드는 Promise가 이행(fulfilled) 되었건 거부(rejected) 되었건, 최종적으로 공통된 로직(console.log("All done!"))를 수행할 수 있음.
+
+```js
+getImage(file) {
+    .then(image => console.log(image))
+    .catch(error => console.log(error))
+    .finally(() => console.log("All done!"))}
+```
+
+### 4-17
+
+console을 통해 Promise의 then 콜백은 setTimeout 콜백보다 먼저 실행됨을 볼 수 있음.<br/> 즉, Promise를 사용한 콜백은 Microtask, setTimeout 콜백은 Macrotask로 분류되어, 실제 실행 순서는 이벤트 루프 내 Task Queue에 의해 '동기 코드 -> Microtask(Promise then 콜백) -> Macrotask(setTimeout 콜백)' 순으로 실행됨.
+
+```js
+console.log('Start!')
+
+setTimeout(() => {
+    console.log('Timeout!')
+}, 0)
+
+Promise.resolve("Promise!")
+    .then(res => console.log(res))
+
+console.log('End!')
+```
+
+### 4-18
+
+console을 통해 Promise의 then 콜백은 setTimeout 콜백보다 먼저 실행됨을 볼 수 있음.<br/> 즉, Promise를 사용한 콜백은 Microtask, setTimeout 콜백은 Macrotask로 분류되어, 실제 실행 순서는 이벤트 루프 내 Task Queue에 의해 '동기 코드 -> Microtask(Promise then 콜백) -> Macrotask(setTimeout 콜백)' 순으로 실행됨.
+
+```js
+function findUserAndCallBack(id, cb) {
+    const user = {
+        id: id,
+        name: "User" + id,
+        email: id + "@test.com",
+    }
+    cb(user)
+}
+
+findUserAndCallBack(1, function (user) {
+    console.log("user:", user)
+})
+```
+
+### 4-19
+
+setTimeout 등 비동기 처리가 들어가는 경우, 함수 호출(findUser) 즉시 데이터 반환이 불가능함.</br> 즉, 함수 반환 시점과 비동기 완료 시점(Macrotask Q)이 어긋날 경우 원하는 결과를 얻지 못할 수 있음.
+
+```js
+function findUser(id) {
+    let user
+    setTimeout(function () {
+        console.log("waited 0.1 sec.")
+        user = {
+            id: id,
+            name: "User" + id,
+            email: id + "@test.com",
+        }
+    }, 100)
+    return user
+}
+
+const user = findUser(1)
+console.log("user:", user) // undefined
+```
+
+### 4-20
+
+API 사용자가 콜백 함수 방식의 비동기 함수를 통해 데이터를 입력하는 방법의 전형적인 예시.
+
+```js
+findUserAndCallBack(1, function (user) {
+    console.log("user:", user)
+}) // API 사용자
+
+function findUserAndCallBack(id, cb) {
+    setTimeout(function () {
+        console.log("waited 0.1 sec.")
+        const user = {
+            id: id,
+            name: "User" + id,
+            email: id + "@test.com",
+        }
+        cb(user)
+    }, 100)
+} // API 개발자
+```
+
+### 4-21
+
+위의 예제를 Promise를 이용해서 재작성한 코드. 비동기 작업이 끝난 후 resolve를 통해 원하는 데이터를 전달하고, 외부에서는 .then()을 통해 그 결과를 받아올 수 있음.</br> 결과적으로, 콜백 대신 Promise를 이용해 비동기 함수를 구현할 수 있으며, 이러한 패턴은 사물인터넷을 위한 JS 비동기 코드의 구현에 있어 일반적으로 활용됨.
+
+```js
+findUser(1).then(function (user) {
+    console.log("user:", user)
+}) // API 사용자
+
+function findUser(id) {
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            console.log("waited 0.1 sec.")
+            const user = {
+                id: id,
+                name: "User" + id,
+                email: id + "@test.com",
+            }
+            resolve(user)
+        }, 100)
+    })
+} // API 개발자
+```
+
+### 4-22
+
+Promise를 이용하면 함수 실행에 있어 성공(resolve)과 실패(reject)의 경우를 분리하여 처리할 수 있음. 이때, 함수 호출부에서는 .then과 .catch로 처리할 수 있음.
+
+```js
+// 기존 함수
+function devide(numA, numB) {
+    return new Promise((resolve, reject) => {
+        if (numB === 0) reject(new Error("Unable to devide by 0."))
+        else resolve(numA / numB)
+    })
+}
+
+// 함수 호출
+devide(8, 2)
+    .then((result) => console.log("성공:", result))
+    .catch((error) => console.log("실패:", error))
+
+// 결과 == 성공: 4
+```
+
+### 4-23
+
+fetch(url) 함수는 브라우저 표준 함수로서 url에 네트워크 요청을 보내는 Promise 기반 API. 이 때, 요청이 성공되면 Response 객체가 반환되고, 실패하면 reject를 통해 에러가 발생함.
+
+```js
+fetch("https://jsonplaceholder.typicode.com/posts/1")
+    .then((response) => console.log("responses:", response))
+    .catch((error) => console.log("error:", error))
+
+//성공 결과: response: Response {type: 'basic', url: 'https://jsonplaceholder.typicode.com/posts/1', re...
+//실패 결과: error: TypeError: Failed to excute 'fetch' on 'Window': 1 argument required, but only...
+```
+
+### 4-24
+
+fetch 형태로 받아온 응답은 response.json()을 통해 JSON 형태로 변환할 수 있음.
+
+```js
+fetch("https://jsonplaceholder.typicode.com/posts/1")
+    .then((response) => response.json())
+    .then((post) => console.log("post:", post))
+    .catch((error) => console.log("error:", error))
+
+//결과 == post: {userId: 1, id: 1, title: "sunt aut facere repellat provident occaecati excepturi o...
+```
+
+### 4-25
+
+첫번째 호출 결과(post.userId)를 기반으로 두번째 호출(users/:userId)를 수행.</br> 결과적으로, API 응답을 통해 얻은 정보로 이어지는 API를 호출하고, 최종 값을 Promise로 변환할 수 있음.</br> 이러한 예시를 통해 다중 비동기 요청 패턴의 구현이 가능함.
+
+```js
+function fetchAuthorName(postId) {
+    return fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+        .then(response => response.json())
+        .then((post) => post.userId)
+        .then((userId) => {
+            return fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+                .then(response => response.json())
+                .then((user) => user.name)
+        })
+}
+
+fetchAuthorName(1).then((name) => console.log("name:", name))
+
+// 출력: name: Leanne Graham
+```
+
+### 4-26
+
+async/await 키워드를 사용하면 여러 번의 비동기 코드(fetch)를 동기 코드처럼 순차적으로 짤 수 있음.</br> 이를 통해 Promise 체인 내 then()을 나열하는 대신 가독성을 높일 수 있음.
+
+```js
+async function fetchAuthorName(postId) {
+    const postResponse = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`
+    )
+    const post = await postResponse.json()
+    const userId = post.userId
+    const userResponse = await fetch(
+        `https://jsonplaceholder.typicode.com/users/${userId}`
+    )
+    const user = await userResponse.json()
+    return user.name
+}
+
+fetchAuthorName(1).then((name) => console.log("name:", name))
+```
+
+### 4-27
+
+await 함수를 사용하면 다른 비동기 함수를 호출해서 결과값을 받아와 별도의 추가 로직(console 등)을 수행할 수 있음.
+
+```js
+async function printAuthorName(postId) {
+    const name = await fetchAuthorName(postId)
+    console.log("name:", name)
+}
+
+printAuthorName(1)
+```
+
+### 4-28
+
+try/catch를 사용하면, await로 발생한 에러를 동기 코드처럼 쉽게 잡아낼 수 있음. 특히, 원하는 부분에서만 try/catch를 적용하고, 에러 시 대체 행동을 명시적으로 정의할 수 있으며, 이를 통해 비동기 로직을 동기 코드처럼 직관적으로 작성할 수 있음.
+
+```js
+async function fetchAuthorName(postId) {
+    const postResponse = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${postId}`
+    )
+    const post = await postResponse.json()
+    const userId = post.userId
+
+    try {
+        const userResponse = await fetch(
+            `https://jsonplaceholder.typicode.com/users/${userId}`
+        )
+        const user = await userResponse.json()
+        return user.name
+    } catch (err) {
+        console.log("Fail to fetch user:", err)
+        return "Unknown"
+    }
+}
+
+fetchAuthorName(1).then((name) => console.log("name:", name))
+```
+
+### 4-29
+
+async 함수 내부의 await는 해당 함수 내에서만 잠시 블로킹하며, 전역 실행 흐름은 계속 진행함.</br> 즉, 호출부에서 myFunc()가 완료될 때까지 기다리는 것이 아닌, 함수를 호출하자마자 곧바로 다음 코드("After Function!")이 실행됨.</br> 그 다음, Promise가 완료된 시점에서 await one()의 다음 줄(console.log(res))가 실행됨.
+
+```js
+const one = () => Promise.resolve('one!')
+
+async function myFunc() {
+    console.log("In function!");
+    const res = await one();
+    console.log(res);
+}
+
+console.log("Before function!");
+myFunc();
+console.log("After function!");
+```
+
+### 4-30
+
+제너레이터 함수(function*)는 실행을 중간에 멈췄다가 나중에 다시 진행하는 함수로, return이 아닌 yield로 여러 번 값을 내보낼 수 있음.
+
+```js
+function* generateSequence() {
+    yield 1;
+    yield 2;
+    return 3;
+}
+
+// '제너레이터 함수'는 제너레이터 객체'를 생성합니다.
+let generator = generateSequence();
+alert(generator); // [object Generator]
+```
+
+### 4-31
+
+next() 메서드는 제너레이터의 값을 꺼낼 수 있으며, 그 과정에서 JSON 형태로 추출 가능함.</br> 이를 연속적으로 호출하면 value가 순차적으로 나오며, 세번째에서 {done: true}가 나옴.
+
+```js
+function* generateSequence() {
+    yield 1;
+    yield 2;
+    return 3;
+}
+
+let generator = generateSequence();
+
+let one = generator.next();
+
+alert(JSON.stringify(one)); // {value: 1, done: false}
+```
+
+### 4-32
+
+제너레이터는 이터러블(iterable)이며, 따라서 for..of 반복문을 사용해 값을 얻을 수 있음.
+
+```js
+function* generateSequence() {
+    yield 1;
+    yield 2;
+    return 3;
+}
+
+let iterator = generateSequence();
+
+for (let value of generator) {
+    alert(value); // 1, 2가 출력됨.
+}
+```
+
+### 4-33
+
+제너레이터는 이터러블 이므로, 역시 전개 문법(...)이 사용 가능함.
+
+```js
+function* generateSequence() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+let seqeunce = [0, ...generateSequence()];
+
+alert(seqeunce); // 0, 1, 2, 3
+```
+
+### 4-34
+
+제너레이터에서 여러 개의 값을 순차적으로 얻을 때, yield*를 통해 하나의 제너레이터가 다른 제너레이터의 실행을 위임할 수 있음.
+
+```js
+function* generateSequence(start, end) {
+    for (let i = start; i <= end; i++) yield i
+}
+
+function* generatePasswordCodes() {
+
+    // 0..9
+    yield* generateSequence(48, 57);
+
+    // A..Z
+    yield* generateSequence(65, 90);
+
+    // a..z
+    yield* generateSequence(97, 122);
+
+}
+
+let str = '';
+
+for(let code of generatePasswordCodes()) {
+    str += String.fromCharCode(code);
+}
+
+alert(str); // 0..9A..Za..z
+```
+
+### 4-35
+
+제너레이터를 사용하여 제너레이터 함수와 제너레이터 객체가 서로 양방향으로 데이터를 주고받을 수 있음. 이때 yield를 통해 값을 내보내며, 다시 호출될 때 값을 받을 수도 있음.
+
+```js
+function* gen() {
+    // 질문을 제너레이터 밖 코드에 던지고 답을 기다립니다.
+    let result = yield "2 + 2 = ?"; // (*)
+
+    alert(result);
+}
+
+let generator = gen();
+
+let question = generator.next().value; // <<-- yield는 value를 반환합니다.
+
+generator.next(4); // --> 결과를 제너레이터 안으로 전달합니다.
+```
+
+### 4-36
+
+마찬가지로, 제너레이터 함수는 여러 번 멈추고 재개되면서 데이터를 서로 주고받을 수 있음.
+
+```js
+function* gen() {
+    let ask1 = yield "2 + 2 = ?";
+
+    alert(ask1); // 4
+
+    let ask2 = yield "3 * 3 = ?";
+
+    alert(ask2); // 9
+}
+
+let generator = gen();
+
+alert( generator.next().value ); // "2 + 2 = ?"
+
+alert( generator.next(4).value ); // "3 * 3 = ?"
+
+alert( generator.next(9).done ); // true
+```
+
+### 4-37
+
+제너레이터 내부에서도 try/catch 사용이 가능함.</br> 제너레이터 객체에서 .throw(error)를 호출하면 제너레이터 내부로 강제로 예외를 던져 내부에서 처리하게 할 수 있음.</br> 또한, 에러는 멈춰있는 yield 위치에서 바로 catch 블록으로 전달됨. 이때 catch로 처리하지 않으면, 제너레이터 밖으로 에러가 다시 나가게 됨.
+
+```js
+fucntion* gen() {
+    try {
+        let result = yield "2 + 2 = ?"; // (1)
+
+        alert("위에서 에러가 던져졌기 때문에 실행 흐름은 여기까지 다다르지 못합니다.");
+    }   catch(e) {
+        alert(e); // 에러 출력
+    }
+}
+
+let generator = gen();
+
+let question = generator.next().value;
+
+generator.throw(new Error("데이터베이스에서 답을 찾지 못했습니다.")); // (2)
+```
+
+### 4-38
+
+마찬가지로, 제너레이터 내부에서 에러를 처리하지 않으면 .throw()로 전달된 에러는 제너레이터 밖으로 전달됨. 이 경우 외부의 try/catch에서 처리될 수 있음. 
+
+```js
+function* generate() {
+    let result = yield "2 + 2 = ?"; // Error in this line
+}
+
+let generator = generate();
+
+let question = generator.next().value;
+
+try {
+    generator.throw(new Error("데이터베이스에서 답을 찾지 못했습니다."));
+}   catch(e) {
+    alert(e); // 에러 출력
+}
+```
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 
