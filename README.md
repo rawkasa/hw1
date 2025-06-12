@@ -17,6 +17,10 @@
 - [Chatper3](#chapter3)
 - [Chatper4](#chapter4)
 - [Chatper5](#chapter5)
+- [Chatper6](#chapter6)
+- [Chatper7](#chapter7)
+- [Acknowledgement](#acknowledgement)
+
 
 # HW1
 
@@ -2253,8 +2257,561 @@ var curry5 = func => a=> b=> c=> d=> e=> func(a, b, c, d, e);
 ```
 
 
+# HW3
+
+## Chatper6 <a name = "chapter6"></a>
+
+### 6-1
+
+Person 생성자 함수는 인자로 받은 name을 객체의 속성 _name에 저장하며, Prototype 메서드는 객체를 여러 개 생성해도 메모리에 한번만 저장함. 이 때, Suzi.__proto__는 Person.prototype을 직접 참조하며, getName() 메서드가 호출되었을 때 this는 Suzi가 아니라 Suzi.__proto__(Person.prototype)을 가리키며, 이 때 _name 속성은 Prototype이 아닌 객체 Suzi에만 존재하므로 undefined를 반환함. <br/>이를 위해서는 Prototype 객체에 _name 속성을 직접 추가하면 정상적인  결과가 나타나나, 이는 비정상적인 방법임. <br/>객체지향 스타일을 사용할 경우, getName()의 this가 Suzi, iu 인스턴스를 가리키는 경우 정상적으로 _name에 접근이 가능함.
+
+```js
+var Person = function (name) {
+    this._name = name;
+};
+Person.prototype.getName = function() {
+    return this._name;
+};
+
+var Suzi = new Person('Suzi');
+Suzi.__proto__.getName();       // Undefined
+
+var Suzi = new Person('Suzi');
+Suzi.__proto__._name = 'SUZI__proto__';
+Suzi.__proto__.getName();       // SUZI__proto__
+
+var Suzi = new Person('Suzi', 20);
+Suzi.getName();            // Suzi
+var iu = new Person('Jieun', 20);
+iu.getName();            // Jieun
+```
+
+### 6-2
+
+Constructor는 함수이자 객체로, 기본적으로 .prototype 속성을 가지며, this.name = name;을 통해 new Constructor로 생성된 객체의 property인 name을 설정함. <br/>이 때, new Constructor('instance') 호출 시 빈 객체가 생성된 후 내부 prototype이 Constructor.prototype으로 설정되며, this가 해당 새 객체를 가리키도록 한 뒤 함수 본문이 실행되어 name 속성이 설정됨. <br/>또한, instance.method1() 호출 시, JS 엔진은 instance 객체에 method1이 없는 것을 확인한 뒤, 내부 프로토타입(instance.__proto__)에서 method1을 찾아 호출함. <br/>Constructor.prototype.property1에 문자열 값을 할당하여, 공유되는 데이터 속성을 하나 더 정의하며, 이를 통해 instance.property1으로 접근 시 프로토타입 체인을 통해 'Constructor Prototype Property'를 반환함.
+
+```js
+var Constructor = function (name) {
+    this.name = name;
+};
+Constructor.prototype.method1 = function() {};
+Constructor.prototype.property1 = 'Constructor Prototype Property';
+
+var instance = new Constructor('Instance');
+console.dir(Constructor);
+console.dir(instance);
+```
+
+### 6-5
+
+생성자 함수 Person은 new Person() 호출 시 내부에 this.name = name이 실행되어 새로 생성된 객체의 property 'name'이 설정되며, 이 과정에서 새 객체의 내부 Prototype은 Person.prototype으로 연결됨. p1~p5 모두 결국 new Person()과 동일하게 동작하여 Person 인스턴스를 생성함. 이는 프로토타입 객체의 constructor 속성이 생성자 자신을 참조하도록 기본 설정되어 있기 때문임.
+
+```js
+var Person = function (name) {
+    this.name = name;
+};
+var p1 = new Person('사람1');                       // (name: '사람1') true
+var p1Proto = Object.getPrototypeOf(p1);
+var p2 = new Person.prototype.constructor('사람2'); // (name: '사람2') true
+var p3 = new p1Proto.constructor('사람3');          // (name: '사람3') true
+var p4 = new p1.__proto__.constructor('사람4');     // (name: '사람4') true
+var p5 = new p1.constructor('사람5');               // (name: '사람5') true
+
+[p1, p2, p3, p4, p5].forEach(function (p) {
+    console.log(p, p instanceof Person);
+});
+```
+
+### 6-6
+
+프로토타입에 정의된 메서드는 iu 인스턴스를 생성한 뒤 getName 속성을 직접 추가함으로서, 인스턴스에 새로 정의된 함수가 실행되게 됨.
+
+```js
+var Person = function (name) { 
+    this.name = name;
+};
+Person.prototype.getName = function () {
+    return this.name;
+};
+
+var iu = new Person('지금');
+iu.getName = function () {
+    return '바로 ' + this.name;
+};
+console.log(iu.getName()); // 바로 지금
+```
+
+### 6-7
+
+arr.__proto__ 는 내부적으로 Array.prototype 을 가리키며 (Object.getPrototypeOf(arr)와 동일), 이로 인해 호출된 push는 Array.prototype.push이며, 호출 시의 this는 arr.__proto__ 즉 Array.prototype 자신이 됨. 따라서, 배열 인스턴스 arr가 아닌 프로토타입 객체인 Array.prototype에 요소 3이 추가됨.
+
+```js
+var arr = [1, 2];
+arr.__proto__.push(3);
+arr.__proto__.__proto__.hasOwnProperty(2); // true
+```
+
+### 6-8
+
+Array.prototype.toString 메서드는 배열 인스턴스를 문자열로 변환하며, Object.prototype.toString은 객체의 내부 Class 또는 기본 타입을 나타내는 태그 형태 문자열을 반환함. 또한, arr.toString()은 프로토타입 체인 상에서 인스턴스 arr에 toString이 own property로 정의되어 있지 않을 때, 내부적으로 Array.prototype.toString을 호출함. 이 때, 인스턴스 레벨에서 toString을 재정의하면 특정 배열 인스턴스에 대해서만 문자열 변환 방식을 변경할 수 있음.
+
+```js
+var arr = [1, 2];
+Array.prototype.toString.call(arr);   // 1,2
+Object.prototype.toString.call(arr);  // [object Array]
+arr.toString();                       // 1,2
+
+arr.toString = function () {
+    return this.join('_');
+};
+arr.toString();                       // 1_2
+```
+
+### 6-9
+
+Object.prototype에 메서드를 추가해 모든 객체에 공통적으로 사용할 수 있도록 함. <br/>이 떄, 1) 객체 리터럴은 own enumerable 속성과 값이 수집 및 반환되고, <br/>2) 숫가 원시값은 Box된 Number 객체에 own enumerable 속성이 없어 빈 배열을 반환하며, <br/>3) 문자열 원시값은  Box된 String 객체의 인덱스가 열거 가능하므로 반환, <br/>4) Boolean 원시값은 열거 가능한 own 속성이 없어 빈 배열 반환, <br/>5) 함수 또한 enumerable이 아니므로 빈 배열 반환, <br/>6) 배열은 own enumerable 속성을 반환함.
+
+```js
+Object.prototype.getEntities = function () {
+    var res = [];
+    for (var prop in this) {
+        if (this.hasOwnProperty(prop)) {
+            res.push(prop, this[prop]);
+        }
+    }
+    return res;
+};
+var data = [
+    ['object', { a: 1, b: 2, c: 3 }],   // []["a", 1], ["b", 2], ["c", 3]]
+    ['number', 345],                    // []
+    ['string', 'abc'],                  // [["0", "a"], ["1", "b"], ["2", "c"]]
+    ['boolean', false],                 // []
+    ['func', function () {}],           // []
+    ['array', [1, 2, 3, 4, 5]],         // [["0", 1], ["1", 2], ["2", 3], ["3", 4], ["4", 5]]
+];
+data.forEach(function (datum) {
+    console.log(datum[1].getEntities());
+});
+```
+
+### 6-10
+
+Array.prototype.slice.call(arguments)를 통해, 함수 내부의 arguments, 즉 배열처럼 보이나 실제 Arrray 인스턴스가 아닌 객체를 실제 배열(Array)로 복사함. for 루프에서는 this[i] = args[i];를 실행하여, 생성자 함수로 만든 객체에 프로퍼티를 직접 추가하며, this.length = args.length;로 length 프로퍼티를 설정함으로써, 마치 배열처럼 인덱스와 length 속성을 갖게 만듦. 결과적으로 g 객체는 { '0': 100, '1': 80, length: 2, ... } 형태가 되어, 배열과 유사한 구조를 가지는 array-like object가 됨. <br/>이 때, 실제 Array 인스턴스와는 달리 내부 프로토타입이 Array.prototype이 아니며, 배열 메서드를 바로 호출할 수 없음. 배열 메서드를 사용하기 위해서는 Array.prototype.push. 형태를 사용해서 생성자 함수의 인스턴스를 바라보게 해야함.  
+
+```js
+var Grade = function () {
+    var args = Array.prototype.slice.call(arguments);
+    for (var i = 0; i < args.length; i++) {
+        this[i] = args[i];
+    }
+    this.length = args.length;
+};
+var g = new Grade(100, 80);
+```
 
 
+
+
+## Chatper7 <a name = "chapter7"></a>
+
+### 7-1
+
+Rectangle.isRectangle = function (instance) { ... }; 부분은 정적 메서드(Static Method)로, 이는 클래스나 생성자 함수 자체 객체에 속성으로 붙으며, 인스턴스가 아니라 Rectangle.isRectangle(...) 형태로 호출해야 함. 이 중 console.log(rect.isRectangle(rect1)); 부분에서 rect라는 식별자는 정의된 적이 없으므로 ReferenceError 또는 Unexpected identifier 형태의 오류가 발생하며, 올바른 호출은 Rectangle.isRectangle(rect1)이어야 함. 즉, 정적 메서드를 호출할 때에는 생성자 함수 이름 또는 클래스 이름을 사용해야 함.
+
+```js
+var Rectangle = function (width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function () {
+    return this.width * this.height;
+};
+Rectangle.isRectangle = function (instance) {
+    return instance instanceof Rectangle &&
+        instance.width > 0 && instance.height > 0;
+};
+
+var rect1 = new Rectangle(3, 4);
+console.log(rect1.getArea());               // 12
+console.log(rect.isRectangle(rect1));       // Error: Unexpected identifier
+console.log(Rectangle.isRectangle(rect1));  // true
+```
+
+### 7-2
+
+arguments 객체는 배열처럼 인덱스와 length 프로퍼티를 갖지만 실제 Array 인스턴스가 아니므로, Array.prototype.slice.call(arguments)로 복사해 실제 배열(args)로 만듦. 이 때, Grade.prototype을 빈 배열 인스턴스([])로 재할당하면, 이후 생성되는 모든 Grade 인스턴스(g)의 내부 프로토타입은 이 배열 인스턴스가 되며, 이를 통해 Array.prototype 메서드를 활용할 수 있음. 따라서, 자바스크립트에서 클래스 상속을 구현했다는 것은 프로토타 입 체이닝을 잘 연결한 것으로 이해하면 됨.
+
+```js
+var Grade = function () {
+    var args = Array.prototype.slice.call(arguments);
+    for (var i = 0; i < args.length; i++) {
+        this[i] = args[i];
+    }
+    this.length = args.length;
+};
+Garde.prototype = [];
+var g = new Grade(100, 80);
+```
+
+### 7-3
+
+Grade 생성자 인스턴스가 배열 메서드(push 등)를 상속받은 뒤, length 프로퍼티를 삭제한 상태에서 push를 호출하면 own 프로퍼티가 없으므로 프로토타입 체인 상에서 동일 이름의 length 프로퍼티를 찾게 되며, Grade.prototype은 빈 배열 인스턴스로 초기 상태에서 length가 0이었으므로, length가 1이 되어버리고, 배연 관점에서 유효 영역은 0번 인덱스 하나 만으로 간주됨.
+
+```js
+var Grade = function () {
+    var args = Array.prototype.slice.call(arguments);
+    for (var i = 0; i < args.length; i++) {
+        this[i] = args[i];
+    }
+    this.length = args.length;
+};
+Grade.prototype = [];
+var g = new Grade(100, 80);
+g.push(90);
+console.log(g); // Grade { '0': 100, '1': 80, '2': 90, length: 3 }
+
+delete g.length;
+g.push(70);
+console.log(g); // Grade { '0': 70, '1': 80, '2': 90, '3': length: 1 } 
+```
+
+### 7-4
+
+Grade.prototype을 배열 인스턴스로 덮어씌울 경우, 새로 생성된 g 객체는 g.__proto__ === Grade.prototype 이며, 배열 메서드를 상속받게됨. 결과적으로, g.push(70) 호출 시, 프로토타입의 length(4)를 읽고 g[4] = 70을 own 프로퍼티로 설정하며, g.length = 5를  own 프로퍼티로 다시 설정하게 됨
+
+```js
+var Grade = function () {
+    var args = Array.prototype.slice.call(arguments);
+    for (var i = 0; i < args.length; i++) {
+        this[i] = args[i];
+    }
+    this.length = args.length;
+};
+Grade.prototype = ['a', 'b', 'c', 'd'];
+var g = new Grade(100, 80);
+g.push(90);
+console.log(g); // Grade { '0': 100, '1': 80, '2': 90, length: 3 }
+
+delete g.length;
+g.push(70);
+console.log(g); // Grade { '0': 100, '1': 80, '2': 90, __ 4: 70, length: 5 } 
+```
+
+### 7-5
+
+생성자 함수 인스턴스(Rectangle)는 Rectangle.prototype.getArea = function() 를 통해 면적 계산 메서드를 정의하며, Square는 Square.prototype.getArea = function() 를 통해 면적 계산 메서드를 정의, sq.getArea() 호출을 통해 면적을 반환할 수 있음. 이 때, Square와 Rectangle는 독립적으로 정의되었으며, 따라서 Square.prototype이 Rectangle.prototype을 참조하지 않으며, 두 클래스 간에 프로토타입 체인 상 연결이 없음.
+
+```js
+var Rectangle = function(width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function() {
+    return this.width * this.height;
+};
+var rect = new Rectangle(3, 4);
+console.log(rect.getArea());                // 12
+
+var Square = function(width) {
+    this.width = width;
+};
+Square.prototype.getArea = function () {
+    return this.width * this.width;
+};
+var sq = new Square(5);
+console.log(sq.getArea());                  // 25
+```
+
+### 7-7
+
+var Square = function(width) { Rectangle.call(this, width, width); }; 부분은 기능 재사용을 위해 Rectangle 생성자를 Square 생성자 내부에서 호출하는 패턴으로, new Square(5)가 실행되면 Rectangle.call(this, 5, 5)가 호출되어 this.width = 5; this.height = 5;가 수행됨. 즉, Square.prototype = new Rectangle(); 상속 패턴에서, Square.prototype을 Rectangle 인스턴스로 설정하여 프로토타입 체인을 구성하며, 이를 통해 Square.prototype.__ proto __ === Rectangle.prototype이 간접적으 로 연결되어, Square 인스턴스가 프로토타입 체인을 통해 Rectangle.prototype.getArea 메서드에 접근할 수 있음.
+
+```js
+var Rectangle = function(width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function() {
+    return this.width * this.height;
+};
+var rect = new Rectangle(3, 4);
+console.log(rect.getArea());                // 12
+
+var Square = function(width) {
+    Rectangle.call(this, width, width);
+};
+Square.prototype = new Rectangle();
+
+var sq = new Square(5);
+console.log(sq.getArea());                  // 25
+```
+
+### 7-8
+
+SubClass.prototype = new SuperClass(); 패턴은 SubClass.prototype.__proto__ === SuperClass.prototype이 되도록 내부 프로토타입을 연결하여 서브클래스 인스턴스가 슈퍼클래스 프로토타입의 메서드에 접근할 수 있게함. new SuperClass() 호출 시 슈퍼 생성자 내부에서 설정한 own 프로퍼티(예: width, height)가 SubClass.prototype 객체에 남을 수 있으므로, for (var prop in SubClass.prototype) 루프를 통해 프로퍼티들을 제거하며, 이를 통해 프로토타입에는 순수하게 메서드 참조용으로만  사용되는 빈 객체 상태가 보장되며, 인스턴스별 상태가 프로토타입에 남아 의도치 않은 공유 부작용이 발생하지 않도록 함. <br/>더불어, Object.freeze()는 객체를 동결하여 이후 프로퍼티 추가/삭제/수정이 불가능하도록 만듦. 이후, Square 생성자 내부에서 Rectangle.call(this, width, width)를 호출하여, 슈퍼 생성자 로직(this.width = width; this.height = height;)을 서브클래스 인스턴스에 적용함.
+
+```js
+var extendClass1 = function (SuperClass, SubClass, subMethods) {
+    console.log(SuperClass, SubClass, subMethods)
+    SubClass.prototype = new SuperClass();
+    for (var prop in SubClass.prototype) {
+        if (SubClass.prototype.hasOwnProperty(prop)) {
+            delete SubClass.prototype[prop];
+        }
+    }
+    if (subMethods) {
+        for (var method in subMethods) {
+            SubClass.prototype[method] = subMethods[method];
+        }
+    }
+    Object.freeze(SubClass.prototype);
+    return SubClass;
+};
+
+var Rectangle = function (width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function () {
+    return this.width * this.height;
+};
+var Square = extendClass1(Rectangle, function (width) {
+    Rectangle.call(this, width, width);
+});
+var sq = new Square(5);
+console.log(sq.getArea()); // 25
+```
+
+### 7-9
+
+extendClass2 내부에서 즉시 실행되는 함수 (function(){ ... })()로 감싸진 이유는, Bridge 생성자 함수를 은닉(private)하고 재사용하기 위함이며, Bridge.prototype = SuperClass.prototype;를 통해 Bridge 생성자의 프로토타입이 SuperClass.prototype을 가리키게 한 뒤, new Bridge()를 SubClass.prototype으로 할당하면, 내부적으로 SubClass.prototype.__proto__ === Bridge.prototype === SuperClass.prototype 이 성립하게 됨. <br/>이를 통해, SubClass 인스턴스는 SuperClass.prototype에 정의된 메서드(getArea 등)에 접근할 수 있으며, 이는 SubClass.prototype = new SuperClass();처럼 SuperClass 생성자를 호출하여 프로토타입을 설정할 때 발생할 수 있는 초기화 부작용(예: SuperClass 생성자가 인자를 요구하거나 내부 상태를 설정하는 로직 실행)을 피할 수 있음.
+
+```js
+var extendClass2 = (function () {
+    var Bridge = function () {};
+    return function (SuperClass, SubClass, subMethods) {
+        Bridge.prototype = SuperClass.prototype;
+        SubClass.prototype = new Bridge();
+        if (subMethods) {
+            for (var method in subMethods) {
+                SubClass.prototype[method] = subMethods[method];
+            }
+        }
+        Object.freeze(SubClass.prototype);
+        return SubClass;
+    };
+})();
+
+var Rectangle = function (width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function () {
+    return this.width * this.height;
+};
+var Square = extendClass2(Rectangle, function (width) {
+    Rectangle.call(this, width, width);
+});
+var sq = new Square(5);
+console.log(sq.getArea()); // 25
+```
+
+### 7-10
+
+extendClass2 내부에서 즉시 실행되는 함수 (function(){ ... })()로 감싸진 이유는, Bridge 생성자 함수를 은닉(private)하고 재사용하기 위함이며, Bridge.prototype = SuperClass.prototype;를 통해 Bridge 생성자의 프로토타입이 SuperClass.prototype을 가리키게 한 뒤, new Bridge()를 SubClass.prototype으로 할당하면, 내부적으로 SubClass.prototype.__proto__ === Bridge.prototype === SuperClass.prototype 이 성립하게 됨. <br/>이를 통해, SubClass 인스턴스는 SuperClass.prototype에 정의된 메서드(getArea 등)에 접근할 수 있으며, 이는 SubClass.prototype = new SuperClass();처럼 SuperClass 생성자를 호출하여 프로토타입을 설정할 때 발생할 수 있는 초기화 부작용(예: SuperClass 생성자가 인자를 요구하거나 내부 상태를 설정하는 로직 실행)을 피할 수 있음.
+
+```js
+var Rectangle = function (width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function () {
+    return this.width * this.height;
+};
+var Square = function (width) {
+    Rectangle.call(this, width, width);
+};
+Square.prototype = Object.create(Rectangle.prototype);
+Object.freeze(Square.prototype);
+
+var sq = new Square(5);
+console.log(sq.getArea()); // 25
+```
+
+### 7-11
+
+SubClass.prototype = new SuperClass();은 SubClass.prototype.__proto__ === SuperClass.prototype이 되게 하여 서브클래스 인스턴스가 슈퍼클래스의 메서드를 상속받도록 하며, 다만 new SuperClass() 호출 시 슈퍼클래스 생성자 내부 로직 이 실행되어 width, height 등 상태가 남을 수 있으므로, 이후 단계에서 해당 own 프로퍼티를 삭제함. 더불어, new SuperClass() 호출로 프로토타입에 남은 own 프로퍼티(예: 슈퍼클래스 생성자에서 설정된 값)를 제거하여, 프로토타입이 순수하게 메서드 참조 전용으로 비어 있게 하여, 인스턴스별 상태가 프로토타입에 남아 의도치 않은 공유 부작용이 발생하는 것을 방지함. <br/>SubClass.prototype.constructor = SubClass; 는 SubClass.prototype을 덮어쓴 뒤에는 기본적으로 constructor 속성이 슈퍼클래스를 가리키 게 되므로, 이를 서브클래스 자신을 가리키도록 복원, instance.constructor === SubClass 관계를 유지시킴. 추가로, if (subMethods) { for (var method in subMethods) { SubClass.prototype[method] = subMethods[method]; } }를 통해 subMethods 객체에 정의된 메서드를 서브클래스의 프로토타입에 추가, 서브클래스 인스턴스가 슈퍼클래스 메서드 외에 자신만의 메서드를 사용할 수 있도록 함.
+
+```js
+var extendClass1 = function (SuperClass, SubClass, subMethods) {
+    SubClass.prototype = new SuperClass();
+    for (var prop in SubClass.prototype) {
+        if (SubClass.prototype.hasOwnProperty(prop)) {
+            delete SubClass.prototype[prop];
+        }
+    }
+    SubClass.prototype.constructor = SubClass;
+    if (subMethods) {
+        for(var method in subMethods) {
+            SubClass.prototype[method] = subMethods[method];
+        }
+    }
+    Object.freeze(SubClass.prototype);
+    return SubClass;
+};
+```
+
+### 7-12
+
+Bridge 패턴을 사용하면 SuperClass 생성자를 직접 호출하지 않고도 SubClass.prototype.__proto__ === SuperClass.prototype이 되도록 할 수 있으며, SubClass.prototype.constructor = SubClass;를 사용해 덮어쓴 뒤에 생성자 참조가 서브클 래스로 올바르게 가리키도록 복원함. 이 때, Bridge.prototype.constructor = SuperClass;는 Bridge.prototype이 SuperClass.prototype과 동일 객체이므로, SuperClass.prototype.constructor가 SuperClass로 유지되도록 명시적으로 재할당하게됨. <br/>더불어, subMethods 객체가 주어지면, 그 own 프로퍼티를 순회하며 SubClass.prototype[method] = subMethods[method];로 추가하며, 이를 통해 서브클래스 인스턴스가 슈퍼클래스 메서드 외에 자신만의 메서드를 사용할 수 있게 함.
+
+```js
+var extendClass2 = (function () {
+    var Bridge = function () {};
+    return function (SuperClass, SubClass, subMethods) {
+        Bridge.prototype = SuperClass.prototype;
+        SubClass.prototype = new Bridge();
+        SubClass.prototype.constructor = SubClass;
+        Bridge.prototype.constructor = SuperClass;
+        if (subMethods) {
+            for (var method in subMethods) {
+                SubClass.prototype[method] = subMethods[method];
+            }
+        }
+        Object.freeze(SubClass.prototype);
+        return SubClass;
+    };
+})();
+```
+
+### 7-13
+
+SubClass.prototype = Object.create(SuperClass.prototype); SubClass.prototype.constructor = SubClass;는 SubClass 인스턴스가 SuperClass.prototype에 정의된 메서드를 상속받게하며, 슈 퍼클래스 생성자를 호출하지 않고도 프로토타입 체인만 연결하므로, 초기화 부작용을 피할 수 있음. 더불어, subMethods 객체가 주어지면, for (var method in subMethods) 루프를 통해 서브클래스 전용 메서드를 SubClass.prototype에 추가하여, 인스턴스는  슈퍼클래스 메서드와 함께 자신만의 메서드도 사용할 수 있게됨.
+
+```js
+var extendClass3 = function (SubClass, SuperClass, subMethods) {
+    SubClass.prototype = Object.create(SuperClass.prototype);
+    SubClass.prototype.constructor = SubClass;
+    if (subMethods) {
+        for (var method in subMethods) {
+            SubClass.prototype[method] = subMethods[method];
+        }
+    }
+    Object.freeze(SubClass.prototype);
+    return SubClass;
+};
+```
+
+### 7-14
+
+super는 인스턴스 레벨에서 부모 생성자 호출 또는 부모 메서드 호출을 수행할 수 있게 함. 먼저, this.super()(args) 형태로 사용하면 내부에서 SuperClass.apply(this, arguments)를 실행해, 서브 생성자 내부에서 슈퍼 생성자 로직을 재사용하며, this.super('getArea')() 형태로 사용하면, SuperClass.prototype에 정의된 getArea 함수가 this 바인딩으로 호출됨. 이러한 super 헬퍼는 부모 메서드나 생성자를 호출할 수 있게 하는 헬퍼 함수로서 사용될 수 있음.
+
+```js
+var extendClass = function (SuperClass, SubClass, subMethods) {
+    SubClass.prototype = Object.create(SuperClass.prototype);
+    SubClass.prototype.constructor = SubClass;
+    SubClass.prototype.super = function (propName) {
+        var self = this;
+        if (!propName) return function () {
+            SuperClass.apply(self, arguments);
+        }
+        var prop = SuperClass.prototype[propName];
+        if (typeof prop !== 'function') return prop;
+        return function () {
+            return prop.apply(self, arguments);
+        }
+    };
+    if (subMethods) {
+        for (var method in subMethods) {
+            SubClass.prototype[method] = subMethods[method];
+        }
+    }
+    Object.freeze(SubClass.prototype);
+    return SubClass;
+};
+
+var Rectangle = function (width, height) {
+    this.width = width;
+    this.height = height;
+};
+Rectangle.prototype.getArea = function () {
+    return this.width * this.height;
+};
+var Square = extendClass(
+    Rectangle,
+    function (width) {
+        this.super()(width, width);
+    }, {
+        getArea: function () {
+            console.log('size is :', this.super('getArea')());
+        }
+    }
+);
+
+var sq = new Square(10);
+sq.getArea();                       // size is : 100
+console.log(sq.super('getArea')()); // 100
+```
+
+### 7-15
+
+ES5 방식은 생성자 함수를 정의하고 프로토타입/함수 객체에 메서드를 할당하는 방식임. 이 때, 정적 메서드는 ES5.staticMethod()로 호출해야 하며, 인스턴스 메서드는 es5Instance.method()로 호출해야 함. ES6의 class 문법은 여전히 프로토타입 기반이나, class 키워드와 static 및 인스턴스 메서드를 활용, 1) static staticMethod() 블록은 클래스 객체 자체에 붙는 정적 메서드를 정의, 2) method() 블록은 프로토타입 메서드로, 인스턴스에서 호출 시 this.name은 인스턴스에 설정된 이름(예: 'es6')을 가리켜 es6 method를 반환함. 이는 정적 메서드 정의 위치, 인스턴스 메서드 정의 위치, 호출 방식, this 바인딩 방식에서 차이를 보이며, 결과적으로 ES6 class 문법은 선언적 형태를 띄어 코드가 더 직관적임.
+
+```js
+// ES5 클래스 문법
+var ES5 = function (name) {
+    this.name = name;
+};
+ES5.staticMethod = function () {
+    return this.name + ' staticMethod';
+};
+ES5.prototype.method = function () {
+    return this.name + ' method';
+};
+var es5Instance = new ES5('es5');
+console.log(ES5.staticMethod());    // es5 staticMethod
+console.log(es5Instance.method());  // es5 method
+
+// ES6 클래스 문법
+var ES6 = class {
+    constructor(name) {
+        this.name = name;
+    }
+    static staticMethod() {
+        return this.name + ' staticMethod';
+    }
+    method() {
+        return this.name + ' method';
+    }
+};
+var es6Instance = new ES6('es6');
+console.log(ES6.staticMethod());    // es6 staticMethod
+console.log(es6Instance.method());  // es6 method
+```
+
+### 7-16
+
+ES6 클래스 문법을 사용하면 class Square extends Rectangle { ... } 구문으로 Square가 Rectangle을 상속받아 Square.prototype.__proto__ === Rectangle.prototype이 설정되어, 부모 클래스의 인스턴스 메서드(getArea)를 상속하게 되며, super를 통해 부모 생성자를 호출할 수 있음.
+
+```js
+var Rectangle = class {
+    constructor (width, height) {
+        this.width = width;
+        this.height = height;
+    }
+    getArea () {
+        return this.width * this.height;
+    }
+};
+var Square = class extends Rectangle {
+    constructor (width) {
+        super(width, width);
+    }
+    getArea () {
+        console.log('size is :', super.getArea());
+    }
+};
+```
 
 
 ## Acknowledgements <a name = "acknowledgement"></a>
