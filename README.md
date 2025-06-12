@@ -16,6 +16,7 @@
 - [Chatper2](#chapter2)
 - [Chatper3](#chapter3)
 - [Chatper4](#chapter4)
+- [Chatper5](#chapter5)
 
 # HW1
 
@@ -1805,6 +1806,456 @@ try {
     alert(e); // 에러 출력
 }
 ```
+
+## Chatper5 <a name = "chapter5"></a>
+
+### 5-1
+
+inner function은 closure variable a를 참조함. 이 때, outer fucntion이 call stack에서 사라져도, (outer) a를 참조하는 함수가 있으면 a는 사라 지지 않음. 이러한 현상을 closure라 함. 이를 통해, inner 함수 안에 선언된 또 다른 함수가 outer 함수의 지역 변수에 접근할 수 있음.
+
+```js
+var outer = function() {
+    var a = 1;
+    var inner = function () {
+        console.log(++a);
+    };
+    inner();
+};
+outer();
+```
+
+### 5-2
+
+a는 outer 함수 안의 지역 변수로서, 원래라면 outer 함수가 끝나고 a를 기억할 수 있는 closure가 형성되어야 하나, inner()를 즉시 실행하였기 때 문에 closure를 밖으로 노출하지 않고 값 2만 반환함. 즉, 내부 함수를 즉시 실행하는 경우, closure는 밖으로 전달되지 못함.
+
+```js
+var outer = function () {
+    var a = 1;
+    var inner = function () {
+        return ++a;
+    };
+    return inner();
+};
+var outer2 = outer();
+console.log(outer2);        // 2
+```
+
+### 5-3
+
+함수를 반환하게 되면 지역 변수와 함께 closure function을 만들 수 있음. 이 과정에서 a는 외부 코드에 의해 직접적으로 접근하거나 수정되지 않으며, 오직 outer2()를 통해서면 a를 읽고 바꿀 수 있어 의도하지 않은 변경을 방지할 수 있음. 즉, closure 함수는 상태의 안전한 보존 및 변경에 활용하기 용이함.
+
+```js
+var outer = function() {
+    var a = 1;
+    var inner = function() {
+        return ++a;
+    };
+    return inner;
+};
+var outer2 = outer ();
+console.log(outer2());       // 2
+console.log(outer2());       // 3
+```
+
+### 5-4
+
+(function(){  })(); 형태로 함수를 감싸면 내부 변수가 전역에 노출되지 않으며, closure는 비동기 콜백(setInterval) 내부에서 외부 함수의 지역  변수를 참조해, 함수가 종료된 뒤에도 계속 사용할 수 있음. 이를 캡슐화(Encapsulation)라 함.
+
+```js
+var outer = function() {
+    var a = 1;
+    var inner = function() {
+        return ++a;
+    };
+    return inner;
+};
+var outer2 = outer ();
+console.log(outer2());       // 2
+console.log(outer2());       // 3
+```
+
+### 5-5
+
+클로저가 사용된 상황에서 메모리를 헤제(garbage collect)하는 방법은 다양함. </br>1) 클로저가 선언 당시 환경을 가리키고 있는 참조가 끊기는(null)  경우, </br>2) inner 함수 내에 변수 참조가 끊기는 경우(null), </br>3) 이벤트 리스너가 콜백 함수로서 참조되지 않도록 이벤트 리스너를 헤제하고 참조를 null 처리하는 경우.
+
+```js
+// (1) return에 의한 클로저의 메모리 해제
+var outer = (function() {
+    var a = 1;
+    var inner = function() {
+        return ++a;
+    };
+    return inner;
+})();
+console.log(outer());   // 2
+console.log(outer());   // 3
+outer = null;           // outer 식별자의 inner 함수 참조를 끊음
+
+// (2) setInterval에 의한 클로저의 메모리 해제
+(function () {
+    var a = 0;
+    var intervalId = null;
+    var inner = function () {
+        if (++a >= 10) {
+            clearInterval(intervalId);
+            intervalId = null;          // inner 식별자의 함수 참조를 끊음
+        }
+        console.log(a);
+    };
+    intervalId = setInterval(inner, 1000);
+})();
+
+// (3) eventListener에 의한 클로저의 메모리 해제
+(function () {
+    var count = 0;
+    var button = document.createElement('button');
+    button.innerText = 'click';
+
+        var clickHandler = function () {
+            console.log(++count, 'times clicked');
+            if (count >= 10) {
+                button.removeEventListener('click', clickHandler);
+                clickHandler = null;    // clickHandler 식별자의 함수 참조를 끊음
+            }
+        };
+        button.addEventListener('click', clickHandler);
+        document.body.appendChild(button);
+    })();
+```
+
+### 5-6
+
+forEach 반복문은 배열 요소(fruit) 하나마다 콜백 함수를 별도의 실행 컨텍스트로 호출하며, (B) 위치에서 addEventListner로 등록한 콜백은 외부 function을 참조하게 되는 클로저가 됨. 이 때, 여러 번 리스너가 실행되었으며, 세 번의 alert가 뜨게 됨.
+
+```js
+var fruits = ['apple', 'banana', 'peach'];
+var $ul = document.createElement('ul');         // (공통 코드)
+
+fruits.forEach(function (fruit) {               // (A)
+    var $li = document.createElement('li'); 
+    $li.innerText = fruit;                  
+    $ul.addEventListener('click', function () { // (B)
+        alert('your choice is ' + fruit);
+    });
+    $ul.appendChild($li);
+});
+document.body.appendChild($ul);
+```
+
+### 5-7
+
+함수를 변수화 한 후, 이를 사용해 addEventListener('click', alertFruit)에 넘겨주면 함수는 호출되어 사용됨. 다만, argument로 event 대신 fruit를 호출하게 되어, 실제 클릭할 때는 Fruit의 값이 아닌 이벤트 argument(clickEvent 등)를 전달해버리는 오류가 발생함.
+
+```js
+var fruits = ['apple', 'banana', 'peach'];
+var $ul = document.createElement('ul');         // (공통 코드)
+
+var alertFruit = function (fruit) {
+    alert('your choice is ' + fruit);
+};
+fruits.forEach(function (fruit) {
+    var $li = document.createElement('li'); 
+    $li.innerText = fruit;
+    $li.addEventListener('click', alertFruit);
+    $ul.appendChild($li);
+});
+document.body.appendChild($ul);
+alertFruit(fruits[1]);
+```
+
+### 5-8
+
+이벤트 핸들러에 fruit 값을 bind()로 바인드 하면, 클로저 없이도 변수를 넘길 수 있음."
+
+```js
+var fruits = ['apple', 'banana', 'peach'];
+var $ul = document.createElement('ul');         // (공통 코드)
+
+var alertFruit = function (fruit) {
+    alert('your choice is ' + fruit);
+};
+fruits.forEach(function (fruit) {
+    var $li = document.createElement('li'); 
+    $li.innerText = fruit;
+    $li.addEventListener('click', alertFruit.bind(null, fruit)); // (변경된 부분)
+    $ul.appendChild($li); 
+});
+document.body.appendChild($ul);
+alertFruit(fruits[1]);
+```
+
+### 5-9
+
+비슷하게, 콜백 함수 안에서 클로저를 이용해 특정 값을 미리 지정하는 함수를 사용하면, 반환된 함수는 fruit에 접근할 수 있음.
+
+```js
+var fruits = ['apple', 'banana', 'peach'];
+var $ul = document.createElement('ul');         // (공통 코드)
+
+var alertFruitBinder = function (fruit) {
+    return function () {
+        alert('your choice is ' + fruit);
+    };
+};
+fruits.forEach(function (fruit) {
+    var $li = document.createElement('li'); 
+    $li.innerText = fruit;
+    $li.addEventListener('click', alertFruitBinder(fruit)); // (변경된 부분)
+    $ul.appendChild($li); 
+});
+document.body.appendChild($ul);
+alertFruit(fruits[1]);
+```
+
+### 5-10
+
+객체 내부에 상태와 동작을 정의하는 방식으로 자동화 할 수 있으나, 변수를 직접 수정할 수 있어 보호되지 않은 상태임.
+
+```js
+var car = {
+    fuel: Math.ceil(Math.random() * 10 + 10),   // 연료(L)
+    power: Math.ceil(Math.random() * 3 + 2),    // 연비(km/L)
+    moved: 0,                                   // 총 이동거리(km)
+    run: function() {
+        var km = Math.ceil(Math.random() * 6);
+        var wasteFuel = km / this.power;
+        if (this.fuel < wasteFuel) {
+            console.log('이동 불가.');
+            return;
+        }
+        this.fuel -= wasteFuel;
+        this.moved += km;
+        console.log(km + 'km 이동 (총 ' + this.moved + 'km)');
+    }      
+};
+```
+
+### 5-11
+
+createCar 함수를 실행함으로써 객체가 생성되고, 반환된 객체에는 변수를 직접적으로 수정할 수 없음. 즉, 클로저를 통해서 함수 내부의 로컬 변수를 보호할 수 있음.
+
+```js
+var createCar = function () {
+    var fuel = Math.ceil(Math.random() * 10 + 10);  // 연료(L)
+    var power = Math.ceil(Math.random() * 3 + 2);   // 연비(km / L)
+    var moved = 0;                                  // 총 이동거리(km)
+    return {
+        get moved() {
+            return moved;
+        },
+        run: function () {
+            var km =Math.ceil(Math.random() * 6);
+            var wasteFuel = km / power;
+            if (fuel < wasteFuel) {
+                console.log('이동 불가.');
+                return;
+            }
+            fuel -= wasteFuel;
+            moved += km;
+            console.log(km + 'km 이동 (총 ' + moved + 'km). 남은 연료: ' + fuel);
+        }
+    };
+};
+var car = createCar();
+```
+
+### 5-12
+
+클로저를 통한 은닉 위에 Object.freeze를 추가, 외부에 공개된 프로퍼티(publicMembers)를 더 이상 수정할 수 없도록 불변(immutable)하게 만들 수 있음. 이를 통해, 외부에는 읽기 전용용 getter만 공개할 수 있음.
+
+```js
+var createCar = function () {
+    var fuel = Math.ceil(Math.random() * 10 + 10);  // 연료(L)
+    var power = Math.ceil(Math.random() * 3 + 2);   // 연비(km / L)
+    var moved = 0;                                  // 총 이동거리(km)
+    var publicMembers = {
+        get moved() {
+            return moved;
+        },
+        run: function () {
+            var km =Math.ceil(Math.random() * 6);
+            var wasteFuel = km / power;
+            if (fuel < wasteFuel) {
+                console.log('이동 불가.');
+                return;
+            }
+            fuel -= wasteFuel;
+            moved += km;
+            console.log(km + 'km 이동 (총 ' + moved + 'km). 남은 연료: ' + fuel);
+        }
+    };
+    Object.freeze(publicMembers);
+    return publicMembers;
+};
+```
+
+### 5-13
+
+bind()를 이용하면 함수의 초기 인자를 미리 고정한 뒤 나중에 나머지 인자를 받아 실행할 수 있으며, 이를 부분 적용 함수(Partial Application)이라 함.
+
+```js
+var add = function () {
+    var result = 0;
+    for (var i = 0; i < arguments.length; i++) {
+        result += arguments[i];
+    }
+    return result;
+};
+var addPartial = add.bind(null, 1, 2, 3, 4, 5);
+console.log(addPartial(6, 7, 8, 9, 10));        // 55
+```
+
+### 5-14
+
+사용자 정의 함수를 사용하면 함수의 일부 인자를 미리 고정/부분 적용(Partial Application) 할 수 있으며, 나중에 나머지 인자를 받아 최종 호출할 수 있음. 이를 사용해서 this 바인딩을 해치지 않고 원본 함수에 그대로 전달할 수 있음.
+
+```js
+var partial = function () {
+    var originalPartialArgs = arguments;
+    var func = originalPartialArgs[0];
+    if (typeof func !== 'function') {
+        throw new TypeError('첫 번째 인자가 함수가 아닙니다.');
+    }
+    return function () {
+        var partialArgs = Array.prototype.slice.call(originalPartialArgs, 1);
+        var restArgs = Array.prototype.slice.call(arguments);
+        return func.apply(this, partialArgs.concat(restArgs));
+    };
+};
+
+var add = function () {
+    var result = 0;
+    for (var i = 0; i < arguments.length; i++) {
+        result += arguments[i];
+    }
+    return result;
+};
+var addPartial = partial(add, 1, 2, 3, 4, 5);
+console.log(addPartial(6, 7, 8, 9, 10));        // 55
+
+var dog = {
+    name: '강아지',
+    greet: partial(function(prefix, suffix) {
+        return prefix + this.name + suffix;
+    }, '왈왈, ')
+};
+console.log(dog.greet('입니다!')); // 왈왈, 강아지입니다!
+```
+
+### 5-15
+
+부분 적용(Partial Application) 수행 시, 플레이스홀더(_)를 사용해서 이후에 채워하 할 인자 자리를 미리 표시할 수 있음. 이를 활용하면 유연한 부분 적용 동작이 가능함.
+
+```js
+Object.defineProperty(window, '_', {
+    value: 'EMPTY_SPACE',
+    writable: false,
+    configurable: false,
+    enumerable: false
+});
+
+var partial2 = function () {
+    var originalPartialArgs = arguments;
+    var func = originalPartialArgs[0];
+    if (typeof func !== 'function') {
+        throw new TypeError('첫 번째 인자가 함수가 아닙니다.');
+    }
+    return function () {
+        var partialArgs = Array.prototype.slice.call(originalPartialArgs, 1);
+        var restArgs = Array.prototype.slice.call(arguments);
+        for (var i = 0; i < restArgs.length; i++) {
+            if (restArgs[i] === _) {
+                restArgs[i] = partialArgs.shift();
+            }
+        }
+        return func.apply(this, partialArgs.concat(restArgs));
+    };
+};
+
+var add = function () {
+    var result = 0;
+    for (var i = 0; i <arguments.length; i++) {
+        result += arguments[i];
+    }
+    return result;
+};
+var addPartial = partial2(add, 1, 2, _, 4, 5, _, _, 8, 9);
+console.log(addPartial(3, 6, 7, 10));                       // 55
+
+var dog = {
+    name: '강아지',
+    greet: partial2(function(prefix, suffix) {
+        return prefix + this.name + suffix;
+    }, '왈왈, ')
+};
+```
+
+### 5-16
+
+디바운스(Debounce) 기법을 사용하면 특정 이벤트가 연속해서 발생할 때, 마지막 이벤트 발생 후 일정 시간(wait)이 지나야 실제 함수를 한 번만 호 출하도록 지연시킬 수 있으며, 이를 사용하면 불필요한 반복 호출을 막을 수 있음.
+
+```js
+var debounce = function (eventName, func, wait) {
+    var timeoutId = null;
+    return function (event) {
+    console.log(eventName, 'event 발생');
+        var self = this;
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(func.bind(self, event), wait);
+    }
+};
+```
+
+### 5-17
+
+커링(Currying) 기법을 사용하면 첫 번째 인자를 고정시킨 새로운 함수를 만들 수 있으며, 이를 부분 적용(Partial Application) 시키면 그 값이 내부에 고정된 채로 최종 함수가 생성됨. 이를 통해  코드 재사용성을 향상시킬 수 있음.
+
+```js
+var curry3 = function (func) {
+    return function (a) {
+        return function (b) {
+            return func(a, b);
+        };
+    };
+};
+
+var getMaxWith10 = curry3(Math.max)(10);
+console.log(getMaxWith10(0));               //10
+console.log(getMaxWith10(25));              //25
+
+var getMinWith10 = curry3(Math,min)(10);
+console.log(getMinWith10(0));               //0
+console.log(getMinWith10(25));              //10
+```
+
+### 5-18
+
+커링 함수를 표현하기 위해 계속해서 return, function()을 나열하면 가독성이 떨어지며, JS ES6 부터는 다음과 같이 작성 가능함: <br/>var curry5 = func => a=> b=> c=> d=> e=> func(a, b, c, d, e);
+
+```js
+var curry5 = function (func) {
+    return function (a) {
+        return function (b) {
+            return function (c) {
+                return function (d) {
+                    return function (e) {
+                        return func(a, b, c, d, e);
+                    };
+                };
+            };
+        };
+    };
+};
+var getMax = curry5(Math,max);
+console.log(getMax(1)(2)(3)(4)(5))
+
+var curry5 = func => a=> b=> c=> d=> e=> func(a, b, c, d, e);
+```
+
+
+
+
+
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 
